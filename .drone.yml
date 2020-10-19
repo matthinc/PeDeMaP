@@ -1,0 +1,23 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: Lint
+    image: gradle
+    commands:
+      - ./gradlew ktlintCheck
+  - name: Build
+    image: thyrlian/android-sdk
+    commands:
+      - ./gradlew build
+  - name: Publish
+    image: plugins/github-release
+    settings:
+      api_key:
+        from_secret: GH_TOKEN
+      files:
+        - app/build/outputs/apk/debug/*.apk
+        - app/build/outputs/apk/release/*.apk
+    when:
+      event: tag
