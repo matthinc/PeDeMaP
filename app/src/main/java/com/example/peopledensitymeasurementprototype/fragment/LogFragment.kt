@@ -31,7 +31,7 @@ class LogFragment : Fragment(), Observer<List<LogEntity>> {
         val viewModel = ViewModelProvider(this).get(LogFragmentViewModel::class.java)
         viewModel.logEntries.observe(viewLifecycleOwner, this)
 
-        adapter = LogViewAdapter(viewModel.logEntries.value, requireContext())
+        adapter = LogViewAdapter(mutableListOf(), requireContext())
 
         val logView = view.findViewById<RecyclerView>(R.id.log_view)
         logView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -46,7 +46,8 @@ class LogFragment : Fragment(), Observer<List<LogEntity>> {
     }
 
     override fun onChanged(logs: List<LogEntity>) {
-        adapter.entries = logs
+        adapter.entries.clear()
+        adapter.entries.addAll(logs)
         adapter.notifyDataSetChanged()
     }
 }

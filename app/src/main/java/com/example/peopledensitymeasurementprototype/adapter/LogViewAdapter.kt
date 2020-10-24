@@ -13,7 +13,8 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
 
-class LogViewAdapter(var entries: List<LogEntity>?, private val ctx: Context) : RecyclerView.Adapter<LogViewHolder>() {
+class LogViewAdapter(var entries: MutableList<LogEntity>, private val ctx: Context) :
+    RecyclerView.Adapter<LogViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LogViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.log_view_item_view, parent, false)
@@ -21,32 +22,35 @@ class LogViewAdapter(var entries: List<LogEntity>?, private val ctx: Context) : 
     }
 
     override fun getItemCount(): Int {
-        return (entries ?: emptyList()).size
+        return entries.size
     }
 
     override fun onBindViewHolder(holder: LogViewHolder, position: Int) {
-        entries?.let {
-            val entry = it[position]
+        val entry = entries[position]
 
-            // Log level mapping
-            holder.level.text = when (entry.level) {
-                LOG_LEVEL_DEBUG -> ctx.getString(R.string.log_level_debug)
-                LOG_LEVEL_INFO -> ctx.getString(R.string.log_level_info)
-                LOG_LEVEL_WARN -> ctx.getString(R.string.log_level_warn)
-                LOG_LEVEL_ERROR -> ctx.getString(R.string.log_level_error)
-                else -> ctx.resources.getString(R.string.log_level_unknown)
-            }
-
-            holder.category.text = entry.category
-
-            holder.timestamp.text = LocalDateTime.ofInstant(
-                Instant.ofEpochSecond(entry.timestamp),
-                ZoneId.systemDefault()
-            ).formatForLog()
-
-            holder.message.text = entry.message
+        // Log level mapping
+        val label = when (entry.level) {
+            LOG_LEVEL_DEBUG -> LogLevelLabel(ctx.getString(R.string.log_level_debug), 0xff333333)
+            LOG_LEVEL_INFO -> LogLevelLabel(ctx.getString(R.string.log_level_info), 0xff42bcf5)
+            LOG_LEVEL_WARN -> LogLevelLabel(ctx.getString(R.string.log_level_warn), 0xffffae00)
+            LOG_LEVEL_ERROR -> LogLevelLabel(ctx.getString(R.string.log_level_error), 0xfff55742)
+            else -> LogLevelLabel(ctx.getString(R.string.unknown), 0xff000000)
         }
+
+        holder.level.text = label.text
+        holder.level.setTextColor(label.color.toInt())
+
+        holder.category.text = entry.category
+
+        holder.timestamp.text = LocalDateTime.ofInstant(
+            Instant.ofEpochSecond(entry.timestamp),
+            ZoneId.systemDefault()
+        ).formatForLog()
+
+        holder.message.text = entry.message
     }
+
+    private data class LogLevelLabel(val text: String, val color: Long)
 }
 
 class LogViewHolder(view: View) : RecyclerView.ViewHolder(view) {

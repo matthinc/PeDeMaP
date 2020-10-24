@@ -11,5 +11,12 @@ abstract class Database : RoomDatabase() {
     abstract fun logDao(): LogDao
 }
 
-fun getDatabase(ctx: Context) = Room.databaseBuilder(ctx, Database::class.java, "default-database")
-    .build()
+private var database: Database? = null
+
+fun getDatabase(ctx: Context): Database {
+    if (database == null) {
+        database = Room.databaseBuilder(ctx, Database::class.java, "default-database")
+            .build()
+    }
+    return database!!
+}
