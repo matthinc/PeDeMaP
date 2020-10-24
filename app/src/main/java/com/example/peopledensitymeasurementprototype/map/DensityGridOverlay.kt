@@ -53,7 +53,7 @@ class DensityGridOverlay : Overlay() {
     companion object {
         private val BORDER_PAINT = Paint().also {
             it.style = Paint.Style.STROKE
-            it.strokeWidth = 5f
+            it.strokeWidth = 1f
             it.color = Color.BLACK
         }
     }

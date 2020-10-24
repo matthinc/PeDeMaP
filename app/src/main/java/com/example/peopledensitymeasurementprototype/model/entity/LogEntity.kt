@@ -4,9 +4,8 @@ import androidx.annotation.NonNull
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.peopledensitymeasurementprototype.util.epochSecondTimestamp
 import org.jetbrains.annotations.NotNull
-import java.time.LocalDateTime
-import java.time.ZoneId
 
 @Entity(tableName = "log_table")
 data class LogEntity(
@@ -37,6 +36,5 @@ const val LOG_LEVEL_WARN = 100
 const val LOG_LEVEL_ERROR = 300
 
 fun makeLogEntity(category: String, level: Int, message: String): LogEntity {
-    val timestamp = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond()
-    return LogEntity(0, category, level, timestamp, message)
+    return LogEntity(0, category, level, epochSecondTimestamp(), message)
 }
