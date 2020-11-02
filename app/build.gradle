@@ -31,6 +31,9 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    buildFeatures {
+        dataBinding = true
+    }
 }
 
 dependencies {
@@ -54,4 +57,5 @@ dependencies {
     kapt "android.arch.persistence.room:compiler:$rootProject.roomVersion"
     androidTestImplementation "android.arch.persistence.room:testing:$rootProject.roomVersion"
     implementation 'com.google.android.gms:play-services-location:17.1.0'
+    implementation 'com.google.android.material:material:1.2.1'
 }

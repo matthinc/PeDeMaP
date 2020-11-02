@@ -17,4 +17,7 @@
     <string name="log_level_unknown">UNKNOWN</string>
     <string name="log_level_warn">WARNING</string>
     <string name="log_level_error">ERROR</string>
+    <string name="restart_location_service">Restart Location Service</string>
+    <string name="hint_location_interval">Interval</string>
+    <string name="preferences_header_location">Location</string>
 </resources>

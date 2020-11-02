@@ -9,8 +9,9 @@ import android.os.IBinder
 import androidx.core.app.ActivityCompat
 import com.example.peopledensitymeasurementprototype.model.entity.LOG_LEVEL_DEBUG
 import com.example.peopledensitymeasurementprototype.model.entity.LOG_LEVEL_ERROR
+import com.example.peopledensitymeasurementprototype.model.entity.LOG_LEVEL_WARN
 import com.example.peopledensitymeasurementprototype.receiver.LocationUpdateReceiver
-import com.example.peopledensitymeasurementprototype.util.log
+import com.example.peopledensitymeasurementprototype.util.*
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 
@@ -67,12 +68,19 @@ class LocationService : Service() {
 
     private fun stopLocationUpdates() {
         locationClient.removeLocationUpdates(locationUpdateReceiverPendingIntent)
+        log(this, LOG_LEVEL_WARN, "Location", "Stop location updates")
     }
 
     private fun getLocationRequest(): LocationRequest {
+        val preferences = getSettingsPreferences()
+
         return LocationRequest.create().apply {
-            interval = 10_000 // 10 Seconds
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY // Better than 100m
+            interval = preferences.readPropertyInt(Preferences.gpsInterval).toLong() * 1_000
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY // Better than 100m 
+
+            if (preferences.readPropertyBoolean(Preferences.smallestDisplacement)) {
+                smallestDisplacement = 5f
+            }
         }
     }
 
