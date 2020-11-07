@@ -2,6 +2,7 @@ package com.example.peopledensitymeasurementprototype.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,8 @@ import com.example.peopledensitymeasurementprototype.R
 import com.example.peopledensitymeasurementprototype.databinding.FragmentPreferencesBinding
 import com.example.peopledensitymeasurementprototype.service.LocationService
 import com.example.peopledensitymeasurementprototype.viewmodel.PreferencesViewModel
+import java.util.*
+import kotlin.concurrent.timerTask
 
 class PreferencesFragment : Fragment() {
 
@@ -36,7 +39,10 @@ class PreferencesFragment : Fragment() {
 
             requireContext().apply {
                 stopService(serviceIntent)
-                startService(serviceIntent)
+
+                Timer().schedule(timerTask {
+                    startService(serviceIntent)
+                }, 1500)
             }
         }
 

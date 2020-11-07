@@ -21,4 +21,10 @@ class LogRepository(ctx: Context) {
     fun deleteAll() {
         GlobalScope.launch { db.logDao().deleteAll() }
     }
+
+    fun toCSV(): String {
+        return entries.value
+            ?.joinToString("\n") { "${it.id};${it.timestamp};${it.level};${it.category};${it.message}" }
+            ?:""
+    }
 }

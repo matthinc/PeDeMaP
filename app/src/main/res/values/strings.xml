@@ -20,4 +20,5 @@
     <string name="restart_location_service">Restart Location Service</string>
     <string name="hint_location_interval">Interval</string>
     <string name="preferences_header_location">Location</string>
+    <string name="foreground_message">Retrieving Location updates in the background...</string>
 </resources>

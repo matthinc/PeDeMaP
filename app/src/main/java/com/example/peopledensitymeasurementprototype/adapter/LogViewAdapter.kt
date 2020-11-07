@@ -47,7 +47,7 @@ class LogViewAdapter(var entries: MutableList<LogEntity>, private val ctx: Conte
             ZoneId.systemDefault()
         ).formatForLog()
 
-        holder.message.text = entry.message
+        holder.message.text = entry.message.replace(";", "\n")
     }
 
     private data class LogLevelLabel(val text: String, val color: Long)

@@ -26,4 +26,15 @@
         android:src="@drawable/ic_baseline_delete_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/share_log_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:clickable="true"
+        android:src="@drawable/ic_baseline_share_24"
+        app:layout_constraintBottom_toTopOf="@+id/log_fab"
+        app:layout_constraintEnd_toEndOf="@+id/log_fab"
+        app:layout_constraintStart_toStartOf="@+id/log_fab" />
 </androidx.constraintlayout.widget.ConstraintLayout>

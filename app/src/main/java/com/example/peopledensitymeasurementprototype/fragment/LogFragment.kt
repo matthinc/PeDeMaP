@@ -1,5 +1,6 @@
 package com.example.peopledensitymeasurementprototype.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.peopledensitymeasurementprototype.R
@@ -15,7 +15,6 @@ import com.example.peopledensitymeasurementprototype.adapter.LogViewAdapter
 import com.example.peopledensitymeasurementprototype.model.entity.LogEntity
 import com.example.peopledensitymeasurementprototype.viewmodel.LogFragmentViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.android.synthetic.main.fragment_log.*
 
 class LogFragment : Fragment(), Observer<List<LogEntity>> {
 
@@ -40,6 +39,18 @@ class LogFragment : Fragment(), Observer<List<LogEntity>> {
         val logFab = view.findViewById<FloatingActionButton>(R.id.log_fab)
         logFab.setOnClickListener {
             viewModel.logRepository.deleteAll()
+        }
+
+        val shareLogFab = view.findViewById<FloatingActionButton>(R.id.share_log_fab)
+        shareLogFab.setOnClickListener {
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, viewModel.logRepository.toCSV())
+                type = "text/plain"
+            }
+
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            startActivity(shareIntent)
         }
 
         return view

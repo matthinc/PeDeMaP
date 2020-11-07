@@ -7,6 +7,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.IBinder
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import com.example.peopledensitymeasurementprototype.MainActivity
+import com.example.peopledensitymeasurementprototype.R
 import com.example.peopledensitymeasurementprototype.model.entity.LOG_LEVEL_DEBUG
 import com.example.peopledensitymeasurementprototype.model.entity.LOG_LEVEL_ERROR
 import com.example.peopledensitymeasurementprototype.model.entity.LOG_LEVEL_WARN
@@ -26,9 +29,20 @@ class LocationService : Service() {
         PendingIntent.getBroadcast(this, REQUEST_CODE_LOCATION_UPDATE, intent, PendingIntent.FLAG_CANCEL_CURRENT)
     }
 
+    private val foregroundNotification by lazy {
+        val intent = Intent(this, MainActivity::class.java)
+
+        NotificationCompat.Builder(this, MainActivity.NOTIFICATION_CHANNEL_ID).apply {
+            setContentTitle(applicationInfo.loadLabel(packageManager))
+            setContentText(getString(R.string.foreground_message))
+            setContentIntent(PendingIntent.getActivity(this@LocationService, 0, intent, 0))
+        }.build()
+    }
+
     override fun onBind(p0: Intent?): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        startForeground(LOCATION_SERVICE_FOREGROUND_ID, foregroundNotification)
         startLocationUpdates()
         return super.onStartCommand(intent, flags, startId)
     }
@@ -81,10 +95,14 @@ class LocationService : Service() {
             if (preferences.readPropertyBoolean(Preferences.smallestDisplacement)) {
                 smallestDisplacement = 5f
             }
+
+            // Force constant interval for repeatable measurements
+            fastestInterval = interval
         }
     }
 
     companion object {
         const val REQUEST_CODE_LOCATION_UPDATE = 0x1510
+        const val LOCATION_SERVICE_FOREGROUND_ID = 0x1511
     }
 }
