@@ -2,12 +2,12 @@ package com.example.peopledensitymeasurementprototype.util
 
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.util.*
 
-fun LocalDateTime.formatForLog(): String {
+fun Date.formatForLog(): String {
     fun Int.pad2() = toString().padStart(2, '0')
 
-    return "${dayOfMonth.pad2()}.${monthValue.pad2()}.${year.pad2()}" +
-        " ${hour.pad2()}:${minute.pad2()}:${second.pad2()}"
+    return time.toString()
 }
 
-fun epochSecondTimestamp() = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond()
+fun epochSecondTimestamp() = Date().time

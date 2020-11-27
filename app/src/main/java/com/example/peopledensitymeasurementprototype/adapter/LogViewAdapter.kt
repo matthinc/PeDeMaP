@@ -12,6 +12,7 @@ import com.example.peopledensitymeasurementprototype.util.formatForLog
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.util.*
 
 class LogViewAdapter(var entries: MutableList<LogEntity>, private val ctx: Context) :
     RecyclerView.Adapter<LogViewHolder>() {
@@ -42,10 +43,10 @@ class LogViewAdapter(var entries: MutableList<LogEntity>, private val ctx: Conte
 
         holder.category.text = entry.category
 
-        holder.timestamp.text = LocalDateTime.ofInstant(
+        holder.timestamp.text = Date(entry.timestamp).formatForLog()/*LocalDateTime.ofInstant(
             Instant.ofEpochSecond(entry.timestamp),
             ZoneId.systemDefault()
-        ).formatForLog()
+        ).formatForLog()*/
 
         holder.message.text = entry.message.replace(";", "\n")
     }

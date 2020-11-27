@@ -10,8 +10,8 @@
         <option name="gradleJvm" value="1.8" />
         <option name="modules">
           <set>
-            <option value="/media/mjo/home/matthias/Documents/Studium/BA/PeopleDensityMeasurementPrototype" />
-            <option value="/media/mjo/home/matthias/Documents/Studium/BA/PeopleDensityMeasurementPrototype/app" />
+            <option value="/media/documents/Studium/BA/PeopleDensityMeasurementPrototype" />
+            <option value="/media/documents/Studium/BA/PeopleDensityMeasurementPrototype/app" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

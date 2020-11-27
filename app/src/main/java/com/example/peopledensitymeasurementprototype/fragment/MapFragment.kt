@@ -7,11 +7,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.example.peopledensitymeasurementprototype.BApplication
 import com.example.peopledensitymeasurementprototype.R
+import com.example.peopledensitymeasurementprototype.density.UTMLocation
 import com.example.peopledensitymeasurementprototype.util.toGeoPoint
 import com.example.peopledensitymeasurementprototype.view.DensityMapView
 import com.example.peopledensitymeasurementprototype.viewmodel.MapViewModel
 import kotlinx.android.synthetic.main.fragment_map.view.*
+import org.osmdroid.util.GeoPoint
 
 class MapFragment : Fragment() {
 
@@ -24,7 +27,10 @@ class MapFragment : Fragment() {
 
         val viewModel = ViewModelProvider(this).get(MapViewModel::class.java)
 
-        view.osm_map_view.setCurrentPosition(DensityMapView.DEFAULT_CENTER, 0f)
+        view.osm_map_view.setCurrentPosition(GeoPoint(DensityMapView.DEFAULT_CENTER.latitude(), DensityMapView.DEFAULT_CENTER.longitude()), 0f)
+
+        val application = requireContext().applicationContext as BApplication
+        view.osm_map_view.setDensityGrid(application.grid)
 
         viewModel.lastLocation.observe(
             viewLifecycleOwner,
@@ -33,6 +39,13 @@ class MapFragment : Fragment() {
                     val locationGeoPoint = location.toGeoPoint()
                     view.osm_map_view.setCurrentPosition(locationGeoPoint, location.accuracy)
                     view.osm_map_view.controller.setCenter(locationGeoPoint)
+                    view.osm_map_view.setCurrentGridLocation(
+                        UTMLocation.newBuilder(
+                        location.zoneId,
+                        location.northing.toInt(),
+                        location.easting.toInt(),
+                        location.northernHemisphere
+                    ).build())
                 }
             }
         )

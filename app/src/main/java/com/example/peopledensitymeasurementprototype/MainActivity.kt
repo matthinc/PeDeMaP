@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -12,9 +13,13 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.peopledensitymeasurementprototype.density.UniqueIDProvider
+import com.example.peopledensitymeasurementprototype.model.entity.LOG_LEVEL_INFO
 import com.example.peopledensitymeasurementprototype.receiver.BatteryChangedReceiver
 import com.example.peopledensitymeasurementprototype.service.ActivityRecognitionService
+import com.example.peopledensitymeasurementprototype.service.LocationBroadcastReceiverService
 import com.example.peopledensitymeasurementprototype.service.LocationService
+import com.example.peopledensitymeasurementprototype.util.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -35,11 +40,21 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
 
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(NotificationChannel(NOTIFICATION_CHANNEL_ID, "Test", NotificationManager.IMPORTANCE_LOW))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationManager.createNotificationChannel(NotificationChannel(NOTIFICATION_CHANNEL_ID, "Test", NotificationManager.IMPORTANCE_LOW))
+        }
+
+        // Generate device id
+        if (getSettingsPreferences().readPropertyInt(Preferences.uniqueDeviceId) == Preferences.uniqueDeviceId.defaultValue) {
+            getSettingsPreferences().storeProperty(Preferences.uniqueDeviceId.withValue(UniqueIDProvider.generateUniqueDeviceId()))
+        }
+
+        log(this, LOG_LEVEL_INFO, "MainActivity", "Started with device-id ${getSettingsPreferences().readPropertyInt(Preferences.uniqueDeviceId)}")
 
         handlePermissions()
         startService(Intent(this, LocationService::class.java))
         startService(Intent(this, ActivityRecognitionService::class.java))
+        startService(Intent(this, LocationBroadcastReceiverService::class.java))
 
         registerReceiver(BatteryChangedReceiver(), IntentFilter(Intent.ACTION_BATTERY_CHANGED))
     }

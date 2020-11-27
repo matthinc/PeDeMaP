@@ -25,5 +25,22 @@ data class LocationEntity(
 
     @ColumnInfo
     @NonNull
-    val timestamp: Long
+    val timestamp: Long,
+
+    @ColumnInfo(name = "zoneId")
+    @NonNull
+    val zoneId: Int,
+
+    @ColumnInfo(name = "northing")
+    @NonNull
+    val northing: Long,
+
+    @ColumnInfo(name = "easting")
+    @NonNull
+    val easting: Long,
+
+    @ColumnInfo(name = "northernHemisphere")
+    @NonNull
+    val northernHemisphere: Boolean
 )
+

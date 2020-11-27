@@ -6,4 +6,3 @@ import org.osmdroid.util.GeoPoint
 
 fun LocationEntity.toGeoPoint() = GeoPoint(latitude, longitude)
 
-fun Location.toLocationEntity() = LocationEntity(0, latitude, longitude, accuracy, time)

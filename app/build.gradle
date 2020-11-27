@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'org.jlleitschuh.gradle.ktlint'
+apply plugin: 'com.google.protobuf'
 
 android {
     compileSdkVersion 30
@@ -10,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.peopledensitymeasurementprototype"
-        minSdkVersion 26
+        minSdkVersion 25
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -34,7 +35,19 @@ android {
     buildFeatures {
         dataBinding = true
     }
+    protobuf {
+        protoc {
+            artifact = "com.google.protobuf:protoc:3.11.0"
+        }
+        generateProtoTasks {
+            all()*.plugins {
+                java {}
+            }
+        }
+    }
 }
+
+
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -58,4 +71,6 @@ dependencies {
     androidTestImplementation "android.arch.persistence.room:testing:$rootProject.roomVersion"
     implementation 'com.google.android.gms:play-services-location:17.1.0'
     implementation 'com.google.android.material:material:1.2.1'
+    implementation group: 'gov.nasa', name: 'worldwind', version: '2.0.0-986'
+    implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '3.8.0'
 }
