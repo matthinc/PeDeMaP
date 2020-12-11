@@ -95,11 +95,11 @@ class UTMLocation internal constructor () {
 
         val bearingRad = (bearing!! / 360.0) * 2 * Math.PI
 
-        return Direction(
-            sin(
-                bearingRad
-            ), cos(bearingRad)
-        )
+        return Direction(sin(bearingRad), cos(bearingRad))
+    }
+
+    override fun toString(): String {
+        return "($zoneId $northing $easting)"
     }
 
     data class Direction(val north: Double, val east: Double)

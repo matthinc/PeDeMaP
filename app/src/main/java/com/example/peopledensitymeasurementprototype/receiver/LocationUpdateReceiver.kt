@@ -3,6 +3,7 @@ package com.example.peopledensitymeasurementprototype.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.example.peopledensitymeasurementprototype.BApplication
 import com.example.peopledensitymeasurementprototype.density.UTMLocation
 import com.example.peopledensitymeasurementprototype.model.entity.LOG_LEVEL_DEBUG
 import com.example.peopledensitymeasurementprototype.model.entity.LOG_LEVEL_INFO
@@ -47,7 +48,8 @@ class LocationUpdateReceiver : BroadcastReceiver() {
                 locationRepository.insertLocation(gridLocation.toLocationEntity())
             }
 
-            UDPBroadcastSend(context).sendSingleLocationData(gridLocation.toSingleProto())
+            (context.applicationContext as BApplication)
+                .sendLocationStrategy.sendSingleLocationData(gridLocation.toSingleProto())
 
         } else {
             log(context, LOG_LEVEL_WARN, "Location", "Received Broadcast without valid location")

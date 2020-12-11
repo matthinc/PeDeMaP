@@ -10,11 +10,13 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.peopledensitymeasurementprototype.BApplication
 import com.example.peopledensitymeasurementprototype.R
 import com.example.peopledensitymeasurementprototype.density.UTMLocation
-import com.example.peopledensitymeasurementprototype.util.toGeoPoint
+import com.example.peopledensitymeasurementprototype.density.toSingleProto
+import com.example.peopledensitymeasurementprototype.util.*
 import com.example.peopledensitymeasurementprototype.view.DensityMapView
 import com.example.peopledensitymeasurementprototype.viewmodel.MapViewModel
 import kotlinx.android.synthetic.main.fragment_map.view.*
 import org.osmdroid.util.GeoPoint
+import kotlin.random.Random
 
 class MapFragment : Fragment() {
 
@@ -31,6 +33,17 @@ class MapFragment : Fragment() {
 
         val application = requireContext().applicationContext as BApplication
         view.osm_map_view.setDensityGrid(application.grid)
+
+        view.osm_map_view.onLongClick = {
+            // Send fake location
+            val fakeLocation = UTMLocation.builderFromLocation(it)
+                .withDeviceId(Random.nextInt())
+                .withTimestamp(epochSecondTimestamp().toInt())
+                .withAccuracy(20f)
+                .build()
+
+            application.sendLocationStrategy.sendSingleLocationData(fakeLocation.toSingleProto())
+        }
 
         viewModel.lastLocation.observe(
             viewLifecycleOwner,

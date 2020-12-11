@@ -25,9 +25,9 @@ class CurrentPositionMarker(var position: GeoPoint, var radius: Float) : Overlay
 
     companion object {
         private val RADIUS_CIRCLE_PAINT = Paint().also {
-            it.color = 0x038cfc
-            it.alpha = 100
-            it.style = Paint.Style.FILL
+            it.color = Color.BLUE
+            it.strokeWidth = 2f
+            it.style = Paint.Style.STROKE
         }
         private val POSITION_CENTER_PAINT = Paint().also {
             it.color = 0x038cfc

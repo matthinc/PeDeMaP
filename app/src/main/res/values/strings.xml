@@ -21,4 +21,9 @@
     <string name="hint_location_interval">Interval</string>
     <string name="preferences_header_location">Location</string>
     <string name="foreground_message">Retrieving Location updates in the background...</string>
+    <string name="preferences_header_density">Density calculation</string>
+    <string-array name="algorithms">
+        <item>SimpleDensityCalculationStrategy</item>
+        <item>RadiusNormalDistributedDensityCalculationStrategy</item>
+    </string-array>
 </resources>

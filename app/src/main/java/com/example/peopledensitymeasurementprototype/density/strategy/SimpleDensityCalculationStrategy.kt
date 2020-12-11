@@ -6,7 +6,7 @@ import com.example.peopledensitymeasurementprototype.density.UTMLocation
 class SimpleDensityCalculationStrategy: DensityCalculationStrategy {
 
     override fun calculateDensityAt(locations: List<UTMLocation>, location: UTMLocation): Density {
-        return Density(locations.count { location.matchesPosition(it) })
+        return Density(locations.count { location.matchesPosition(it) }.toDouble())
     }
 
 }

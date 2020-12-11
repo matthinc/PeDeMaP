@@ -1,8 +1,11 @@
 package com.example.peopledensitymeasurementprototype
 
 import android.app.Application
-import com.example.peopledensitymeasurementprototype.density.DensityGrid
+import com.example.peopledensitymeasurementprototype.density.BaseDensityGrid
+import com.example.peopledensitymeasurementprototype.net.send.UDPBroadcastSend
 
 class BApplication: Application() {
-    val grid = DensityGrid()
+    val grid = BaseDensityGrid()
+
+    val sendLocationStrategy = UDPBroadcastSend(this)
 }

@@ -25,6 +25,7 @@ object Preferences {
     val gpsInterval = Property<Int>("gps_interval", 5, arrayOf(5, 10, 15, 20, 25, 30, 60))
     val smallestDisplacement = Property<Boolean>("smallest_displacement", true, emptyArray())
     val uniqueDeviceId = Property<Int>("device_id", 0, emptyArray())
+    val densityStrategy = Property<Int>("density_strategy",0, emptyArray())
 }
 
 data class Property<T>(val key: String, val defaultValue: T, val possibleValues: Array<T>) {

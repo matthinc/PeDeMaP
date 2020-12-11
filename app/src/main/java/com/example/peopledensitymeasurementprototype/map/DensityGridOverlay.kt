@@ -3,7 +3,9 @@ package com.example.peopledensitymeasurementprototype.map
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Path
 import com.example.peopledensitymeasurementprototype.density.Density
+import com.example.peopledensitymeasurementprototype.density.BaseDensityGrid
 import com.example.peopledensitymeasurementprototype.density.DensityGrid
 import com.example.peopledensitymeasurementprototype.density.UTMLocation
 import com.example.peopledensitymeasurementprototype.view.DensityMapView
@@ -35,6 +37,20 @@ class DensityGridOverlay : Overlay() {
         if (canvas != null && projection != null) drawToCanvas(canvas, projection)
     }
 
+    private fun getCellPath(position: UTMLocation, projection: Projection): Path {
+        fun UTMLocation.yP() = projection.getLongPixelYFromLatitude(this.latitude()).toFloat()
+        fun UTMLocation.xP() = projection.getLongPixelXFromLongitude(this.longitude()).toFloat()
+
+        return Path().apply {
+            reset()
+            moveTo(position.xP(), position.yP())
+            lineTo(position.withOffset(0, cellSize).xP(), position.withOffset(0, cellSize).yP())
+            lineTo(position.withOffset(cellSize, cellSize).xP(), position.withOffset(cellSize, cellSize).yP())
+            lineTo(position.withOffset(cellSize, 0).xP(), position.withOffset(cellSize, 0).yP())
+            lineTo(position.xP(), position.yP())
+        }
+    }
+
 
     private fun drawToCanvas(canvas: Canvas, projection: Projection) {
 
@@ -51,50 +67,11 @@ class DensityGridOverlay : Overlay() {
 
                 if (densityGrid != null) {
                     val density = densityGrid!!.getDensityAt(gridPosition)
-
-                    if (density.people > 0) {
-                        canvas.drawRect(drawX, drawY, drawX + drawSize, drawY - drawSize, getPaintForDensity(density))
-                    }
+                    canvas.drawPath(getCellPath(gridPosition, projection), getPaintForDensity(density))
                 }
 
-                canvas.drawCell(drawX, drawY, drawSize)
             }
         }
-
-        // Draw user rect
-        val userOffset = userPosition.withOffset(cellSize, cellSize)
-
-        canvas.drawLine(
-            projection.getLongPixelXFromLongitude(userPosition.longitude()).toFloat(),
-            projection.getLongPixelYFromLatitude(userPosition.latitude()).toFloat(),
-            projection.getLongPixelXFromLongitude(userPosition.longitude()).toFloat(),
-            projection.getLongPixelYFromLatitude(userOffset.latitude()).toFloat(),
-            BORDER_PAINT
-        )
-
-        canvas.drawLine(
-            projection.getLongPixelXFromLongitude(userOffset.longitude()).toFloat(),
-            projection.getLongPixelYFromLatitude(userOffset.latitude()).toFloat(),
-            projection.getLongPixelXFromLongitude(userPosition.longitude()).toFloat(),
-            projection.getLongPixelYFromLatitude(userOffset.latitude()).toFloat(),
-            BORDER_PAINT
-        )
-
-        canvas.drawLine(
-            projection.getLongPixelXFromLongitude(userOffset.longitude()).toFloat(),
-            projection.getLongPixelYFromLatitude(userOffset.latitude()).toFloat(),
-            projection.getLongPixelXFromLongitude(userOffset.longitude()).toFloat(),
-            projection.getLongPixelYFromLatitude(userPosition.latitude()).toFloat(),
-            BORDER_PAINT
-        )
-
-        canvas.drawLine(
-            projection.getLongPixelXFromLongitude(userPosition.longitude()).toFloat(),
-            projection.getLongPixelYFromLatitude(userPosition.latitude()).toFloat(),
-            projection.getLongPixelXFromLongitude(userOffset.longitude()).toFloat(),
-            projection.getLongPixelYFromLatitude(userPosition.latitude()).toFloat(),
-            BORDER_PAINT
-        )
 
         canvas.drawText(
             userPosition.toString(),
@@ -105,14 +82,11 @@ class DensityGridOverlay : Overlay() {
 
     }
 
-    private fun Canvas.drawCell(x: Float, y: Float, size: Float) {
-        this.drawPoint(x, y, BORDER_PAINT)
-    }
-
     private fun getPaintForDensity(density: Density): Paint {
         return Paint().also {
             it.style = Paint.Style.FILL
-            it.color = Color.RED
+            it.color = densityToColorMapping(density)
+            it.alpha = 128
         }
     }
 
