@@ -45,7 +45,10 @@ class UTMLocation internal constructor () {
     var deviceId: Int? = null
         private set
 
-    var timestamp: Int? = null
+    var timestamp: Long? = null
+        private set
+
+    var ttl: Int? = null
         private set
 
     private var latitude: Double? = null
@@ -115,12 +118,12 @@ class UTMLocation internal constructor () {
             )
         }
 
-        fun builderFromLocation(location: Location): Builder {
+        fun builderFromLocation(location: Location, cellSize: Int): Builder {
             val coord = UTMCoord.fromLatLon(Angle.fromDegreesLatitude(location.latitude), Angle.fromDegreesLongitude(location.longitude))
 
             // Align to grid
-            val cellNorthing = (Math.floor(coord.northing) - Math.floor(coord.northing) % CELL_SIZE).toInt()
-            val cellEasting = (Math.floor(coord.easting) - Math.floor(coord.easting) % CELL_SIZE).toInt()
+            val cellNorthing = (Math.floor(coord.northing) - Math.floor(coord.northing) % cellSize).toInt()
+            val cellEasting = (Math.floor(coord.easting) - Math.floor(coord.easting) % cellSize).toInt()
 
             return newBuilder(
                 coord.zone,
@@ -146,6 +149,7 @@ class UTMLocation internal constructor () {
                 .withSpeed(singleLocationData.speed)
                 .withDeviceId(singleLocationData.deviceId)
                 .withTimestamp(singleLocationData.timestamp)
+                .withTTL(singleLocationData.ttl)
         }
 
         class Builder(val zoneId: Int, val northing: Int, val easting: Int, val northernHermisphere: Boolean) {
@@ -185,8 +189,13 @@ class UTMLocation internal constructor () {
                 return this
             }
 
-            fun withTimestamp(timestamp: Int): Builder {
+            fun withTimestamp(timestamp: Long): Builder {
                 utmLocationObject.timestamp = timestamp
+                return this
+            }
+
+            fun withTTL(ttl: Int): Builder {
+                utmLocationObject.ttl = ttl
                 return this
             }
 
@@ -195,10 +204,6 @@ class UTMLocation internal constructor () {
             }
 
         }
-
-        private const val MSG_MISSING_ATTRIBUTE = "Attribute not set!"
-
-        const val CELL_SIZE = 5
     }
 }
 
@@ -251,6 +256,7 @@ fun UTMLocation.toSingleProto(): Single.SingleLocationData {
         hemisphere = this@toSingleProto.northernHemisphere
         timestamp = this@toSingleProto.timestamp!!
         speed = this@toSingleProto.speed!!.toInt()
+        ttl = this@toSingleProto.ttl!!
     }
 
     return proto.build()

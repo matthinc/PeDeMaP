@@ -13,13 +13,14 @@ class PreferencesViewModel(application: Application) : AndroidViewModel(applicat
     private val sharedPreferences = application.getSettingsPreferences()
 
     private val intervals = Preferences.gpsInterval.possibleValues
+    private val cellSizes = Preferences.cellSize.possibleValues
 
     val intervalStrings get() = intervals.map { "$it Seconds" }
+    val cellSizesStrings get() = cellSizes.map { "${it}x${it}m" }
 
     var selectedInterval = intervals.indexOf(sharedPreferences.readPropertyInt(Preferences.gpsInterval))
         set(value) {
             val intervalValue = intervals[value]
-            log(getApplication(), LOG_LEVEL_INFO, "Location", "Changed interval to $intervalValue")
             sharedPreferences.storeProperty(Preferences.gpsInterval.withValue(intervalValue))
             field = value
         }
@@ -34,11 +35,23 @@ class PreferencesViewModel(application: Application) : AndroidViewModel(applicat
     var selectedAlgorithm = sharedPreferences.readPropertyInt(Preferences.densityStrategy)
         set(value) {
             val bApplication = getApplication() as BApplication
-            bApplication.grid.densityCalculationStrategy = when (value) {
-                1 -> RadiusNormalDistributedDensityCalculationStrategy()
-                else -> SimpleDensityCalculationStrategy()
-            }
             sharedPreferences.storeProperty(Preferences.densityStrategy.withValue(value))
+            bApplication.reloadPreferences()
+            field = value
+        }
+
+    var aging = sharedPreferences.readPropertyBoolean(Preferences.aging)
+        set(value) {
+            val bApplication = getApplication() as BApplication
+            sharedPreferences.storeProperty(Preferences.aging.withValue(value))
+            bApplication.reloadPreferences()
+            field = value
+        }
+
+    var cellSize = cellSizes.indexOf(sharedPreferences.readPropertyInt(Preferences.cellSize))
+        set(value) {
+            val cellSize = cellSizes[value]
+            sharedPreferences.storeProperty(Preferences.cellSize.withValue(cellSize))
             field = value
         }
 }

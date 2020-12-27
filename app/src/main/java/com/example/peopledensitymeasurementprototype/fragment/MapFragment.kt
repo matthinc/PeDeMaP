@@ -36,10 +36,10 @@ class MapFragment : Fragment() {
 
         view.osm_map_view.onLongClick = {
             // Send fake location
-            val fakeLocation = UTMLocation.builderFromLocation(it)
+            val fakeLocation = UTMLocation.builderFromLocation(it, requireContext().bApplication().cellSize)
                 .withDeviceId(Random.nextInt())
-                .withTimestamp(epochSecondTimestamp().toInt())
-                .withAccuracy(20f)
+                .withTimestamp(epochSecondTimestamp())
+                .withAccuracy(10f)
                 .build()
 
             application.sendLocationStrategy.sendSingleLocationData(fakeLocation.toSingleProto())

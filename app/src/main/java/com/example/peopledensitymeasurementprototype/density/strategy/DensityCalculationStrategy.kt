@@ -1,6 +1,8 @@
 package com.example.peopledensitymeasurementprototype.density.strategy
 
+import android.content.Context
 import com.example.peopledensitymeasurementprototype.density.Density
+import com.example.peopledensitymeasurementprototype.density.UTMArea
 import com.example.peopledensitymeasurementprototype.density.UTMLocation
 
 interface DensityCalculationStrategy {

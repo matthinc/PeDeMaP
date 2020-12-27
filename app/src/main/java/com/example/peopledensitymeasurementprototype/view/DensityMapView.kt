@@ -9,6 +9,7 @@ import com.example.peopledensitymeasurementprototype.density.DensityGrid
 import com.example.peopledensitymeasurementprototype.map.CurrentPositionMarker
 import com.example.peopledensitymeasurementprototype.map.DensityGridOverlay
 import com.example.peopledensitymeasurementprototype.density.UTMLocation
+import com.example.peopledensitymeasurementprototype.util.bApplication
 import org.osmdroid.config.Configuration
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -44,7 +45,7 @@ class DensityMapView(context: Context?, attrs: AttributeSet?) : MapView(context,
         controller.setCenter(GeoPoint(DEFAULT_CENTER.latitude(), DEFAULT_CENTER.longitude()))
         controller.setZoom(DEFAULT_ZOOM)
 
-        gridOverlay = DensityGridOverlay()
+        gridOverlay = DensityGridOverlay(context!!.bApplication())
         gridOverlay.gridSize = 101
         overlays.add(gridOverlay)
 

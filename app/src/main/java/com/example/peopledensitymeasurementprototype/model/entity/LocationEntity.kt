@@ -23,7 +23,7 @@ data class LocationEntity(
     @NonNull
     val accuracy: Float,
 
-    @ColumnInfo
+    @ColumnInfo(name = "timestamp")
     @NonNull
     val timestamp: Long,
 

@@ -17,6 +17,7 @@ import com.example.peopledensitymeasurementprototype.receiver.LocationUpdateRece
 import com.example.peopledensitymeasurementprototype.util.*
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import java.net.URI
 
 class LocationService : Service() {
 
@@ -24,10 +25,7 @@ class LocationService : Service() {
         LocationServices.getFusedLocationProviderClient(this)
     }
 
-    private val locationUpdateReceiverPendingIntent by lazy {
-        val intent = Intent(this, LocationUpdateReceiver::class.java)
-        PendingIntent.getBroadcast(this, REQUEST_CODE_LOCATION_UPDATE, intent, PendingIntent.FLAG_CANCEL_CURRENT)
-    }
+    lateinit var pendingIntent: PendingIntent
 
     private val foregroundNotification by lazy {
         val intent = Intent(this, MainActivity::class.java)
@@ -64,10 +62,14 @@ class LocationService : Service() {
             return
         }
 
-        val locationTask = locationClient.requestLocationUpdates(
-            getLocationRequest(),
-            locationUpdateReceiverPendingIntent
-        )
+        val locationRequest = getLocationRequest()
+
+        bApplication().currentLocationTTL = locationRequest.interval.toInt() / 500
+
+        val intent = Intent(this, LocationUpdateReceiver::class.java)
+        pendingIntent = PendingIntent.getBroadcast(this, REQUEST_CODE_LOCATION_UPDATE, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+
+        val locationTask = locationClient.requestLocationUpdates(locationRequest, pendingIntent)
 
         log(this, LOG_LEVEL_DEBUG, "Location", "Start location updates")
 
@@ -81,7 +83,7 @@ class LocationService : Service() {
     }
 
     private fun stopLocationUpdates() {
-        locationClient.removeLocationUpdates(locationUpdateReceiverPendingIntent)
+        locationClient.removeLocationUpdates(pendingIntent)
         log(this, LOG_LEVEL_WARN, "Location", "Stop location updates")
     }
 

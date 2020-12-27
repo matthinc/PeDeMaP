@@ -27,9 +27,10 @@ class LocationUpdateReceiver : BroadcastReceiver() {
             val location = locationResult.lastLocation
 
             // Convert location to grid location
-            val gridLocation = UTMLocation.builderFromLocation(location)
+            val gridLocation = UTMLocation.builderFromLocation(location, context.bApplication().cellSize)
                 .withDeviceId(context.getSettingsPreferences().readPropertyInt(Preferences.uniqueDeviceId))
-                .withTimestamp(epochSecondTimestamp().toInt())
+                .withTimestamp(epochSecondTimestamp())
+                .withTTL(context.bApplication().currentLocationTTL)
                 .build()
 
             log(context, LOG_LEVEL_INFO, "Location Update", arrayOf(
@@ -48,8 +49,7 @@ class LocationUpdateReceiver : BroadcastReceiver() {
                 locationRepository.insertLocation(gridLocation.toLocationEntity())
             }
 
-            (context.applicationContext as BApplication)
-                .sendLocationStrategy.sendSingleLocationData(gridLocation.toSingleProto())
+            context.bApplication().sendLocationStrategy.sendSingleLocationData(gridLocation.toSingleProto())
 
         } else {
             log(context, LOG_LEVEL_WARN, "Location", "Received Broadcast without valid location")

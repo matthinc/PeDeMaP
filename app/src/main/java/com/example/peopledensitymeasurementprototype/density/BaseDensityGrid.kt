@@ -3,6 +3,8 @@ package com.example.peopledensitymeasurementprototype.density
 import com.example.peopledensitymeasurementprototype.density.strategy.DensityCalculationStrategy
 import com.example.peopledensitymeasurementprototype.density.strategy.RadiusNormalDistributedDensityCalculationStrategy
 import com.example.peopledensitymeasurementprototype.density.strategy.SimpleDensityCalculationStrategy
+import com.example.peopledensitymeasurementprototype.util.epochSecondTimestamp
+import com.example.peopledensitymeasurementprototype.util.log
 import java.util.*
 
 class BaseDensityGrid: DensityGrid {
@@ -12,12 +14,17 @@ class BaseDensityGrid: DensityGrid {
 
     var observer: (BaseDensityGrid)->Unit = {}
 
+    var aging = true
+
     override fun add(utmLocation: UTMLocation) {
         if (utmLocation.timestamp == null) {
             throw IllegalArgumentException("Timestamp is null!")
         }
         if (utmLocation.deviceId == null) {
             throw IllegalArgumentException("DeviceID is null!")
+        }
+        if (utmLocation.ttl == null) {
+            throw IllegalArgumentException("TTL is null!")
         }
 
         locationList.updateByDeviceId(utmLocation)
@@ -26,6 +33,7 @@ class BaseDensityGrid: DensityGrid {
     }
 
     override fun getDensityAt(utmLocation: UTMLocation): Density {
+        if (aging) performAging()
         return densityCalculationStrategy.calculateDensityAt(locationList, utmLocation)
     }
 
@@ -36,6 +44,13 @@ class BaseDensityGrid: DensityGrid {
     private fun LinkedList<UTMLocation>.updateByDeviceId(location: UTMLocation) {
         this.removeIf { it.deviceId == location.deviceId }
         add(location)
+    }
+
+    private fun performAging() {
+        if (locationList.removeIf { it.timestamp!! + it.ttl!! < epochSecondTimestamp() }) {
+            densityCalculationStrategy.update(locationList)
+            observer(this)
+        }
     }
 
 }

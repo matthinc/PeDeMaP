@@ -49,6 +49,8 @@ class MainActivity : AppCompatActivity() {
             getSettingsPreferences().storeProperty(Preferences.uniqueDeviceId.withValue(UniqueIDProvider.generateUniqueDeviceId()))
         }
 
+        (application as BApplication).reloadPreferences()
+
         log(this, LOG_LEVEL_INFO, "MainActivity", "Started with device-id ${getSettingsPreferences().readPropertyInt(Preferences.uniqueDeviceId)}")
 
         handlePermissions()

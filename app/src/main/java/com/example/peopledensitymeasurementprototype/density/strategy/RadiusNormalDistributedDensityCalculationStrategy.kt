@@ -1,15 +1,16 @@
 package com.example.peopledensitymeasurementprototype.density.strategy
 
+import android.app.Application
 import com.example.peopledensitymeasurementprototype.density.Density
 import com.example.peopledensitymeasurementprototype.density.UTMLocation
 import com.example.peopledensitymeasurementprototype.density.sum
-import java.util.*
+import com.example.peopledensitymeasurementprototype.util.bApplication
 import kotlin.collections.HashMap
 import kotlin.math.exp
 import kotlin.math.floor
 import kotlin.math.pow
 
-class RadiusNormalDistributedDensityCalculationStrategy: DensityCalculationStrategy {
+class RadiusNormalDistributedDensityCalculationStrategy(val application: Application): DensityCalculationStrategy {
 
     private var density : List<Map<LocationKey, Density>> = emptyList()
 
@@ -21,12 +22,18 @@ class RadiusNormalDistributedDensityCalculationStrategy: DensityCalculationStrat
     private fun densityDistributionByDevice(location: UTMLocation): Map<LocationKey, Density> {
         val densDist = HashMap<LocationKey, Density>()
 
-        val range = floor(location.accuracy!! * 1.5).toInt() / UTMLocation.CELL_SIZE
+        val cellSize = application.bApplication().cellSize
+
+        val range = floor(location.accuracy!! * MAX_RADIUS).toInt() / cellSize
         val distribution = normDist(location.accuracy!!.toDouble())
 
         for (n in -range..range) {
             for (e in -range..range) {
-                val offsetLocation = location.withOffset(n * UTMLocation.CELL_SIZE, e * UTMLocation.CELL_SIZE)
+                val offsetLocation = location.withOffset(n * cellSize, e * cellSize)
+
+                // Only calculate within a MAX_RADIUS sigma radius
+                if (offsetLocation.distanceTo(location) ?: 0 > MAX_RADIUS * location.accuracy!!) continue
+
                 val distance = location.distanceTo(offsetLocation) ?: 0
                 
                 val density = Density(distribution(distance))
@@ -53,6 +60,7 @@ class RadiusNormalDistributedDensityCalculationStrategy: DensityCalculationStrat
     private data class LocationKey(val n: Int, val e: Int)
 
     companion object {
+        private const val MAX_RADIUS = 1.5
         private const val PI2_SQRT = 2.50662827463 // sqrt(2pi)
     }
 

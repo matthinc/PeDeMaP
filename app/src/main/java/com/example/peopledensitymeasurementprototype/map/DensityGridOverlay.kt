@@ -4,25 +4,18 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
-import com.example.peopledensitymeasurementprototype.density.Density
-import com.example.peopledensitymeasurementprototype.density.BaseDensityGrid
-import com.example.peopledensitymeasurementprototype.density.DensityGrid
-import com.example.peopledensitymeasurementprototype.density.UTMLocation
+import com.example.peopledensitymeasurementprototype.BApplication
+import com.example.peopledensitymeasurementprototype.density.*
 import com.example.peopledensitymeasurementprototype.view.DensityMapView
 import org.osmdroid.views.Projection
 import org.osmdroid.views.overlay.Overlay
 
-class DensityGridOverlay : Overlay() {
+class DensityGridOverlay(val application: BApplication) : Overlay() {
 
     /**
      * in meters
      */
-    var gridSize = 20
-
-    /**
-     * Size of a cell in m
-     */
-    var cellSize = UTMLocation.CELL_SIZE
+    var gridSize = 50
 
     /**
      * Grid position (top-left corner)
@@ -33,11 +26,14 @@ class DensityGridOverlay : Overlay() {
 
     var densityGrid: DensityGrid? = null
 
+    // Make sure gridSize is dividable by cellSize
+    private val alignedGridSize get() = gridSize - (gridSize % application.cellSize)
+
     override fun draw(canvas: Canvas?, projection: Projection?) {
         if (canvas != null && projection != null) drawToCanvas(canvas, projection)
     }
 
-    private fun getCellPath(position: UTMLocation, projection: Projection): Path {
+    private fun getCellPath(position: UTMLocation, projection: Projection, cellSize: Int): Path {
         fun UTMLocation.yP() = projection.getLongPixelYFromLatitude(this.latitude()).toFloat()
         fun UTMLocation.xP() = projection.getLongPixelXFromLongitude(this.longitude()).toFloat()
 
@@ -51,10 +47,10 @@ class DensityGridOverlay : Overlay() {
         }
     }
 
-
     private fun drawToCanvas(canvas: Canvas, projection: Projection) {
+        val cellSize = application.cellSize
 
-        val gridCenteringRange = (-(gridSize * 0.5).toInt() until (gridSize * 0.5).toInt() step cellSize)
+        val gridCenteringRange = (-alignedGridSize until alignedGridSize step cellSize)
 
         val drawSize = projection.metersToPixels(cellSize.toFloat())
 
@@ -67,7 +63,10 @@ class DensityGridOverlay : Overlay() {
 
                 if (densityGrid != null) {
                     val density = densityGrid!!.getDensityAt(gridPosition)
-                    canvas.drawPath(getCellPath(gridPosition, projection), getPaintForDensity(density))
+
+                    if (density.people > 0) {
+                        canvas.drawPath(getCellPath(gridPosition, projection, cellSize), getPaintForDensity(density))
+                    }
                 }
 
             }
