@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -41,22 +42,36 @@ class MainActivity : AppCompatActivity() {
 
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationManager.createNotificationChannel(NotificationChannel(NOTIFICATION_CHANNEL_ID, "Test", NotificationManager.IMPORTANCE_LOW))
+            notificationManager.createNotificationChannel(
+                NotificationChannel(NOTIFICATION_CHANNEL_ID, "Test", NotificationManager.IMPORTANCE_LOW)
+            )
         }
 
         // Generate device id
-        if (getSettingsPreferences().readPropertyInt(Preferences.uniqueDeviceId) == Preferences.uniqueDeviceId.defaultValue) {
-            getSettingsPreferences().storeProperty(Preferences.uniqueDeviceId.withValue(UniqueIDProvider.generateUniqueDeviceId()))
+        if (getSettingsPreferences().readPropertyInt(Preferences.uniqueDeviceId)
+            == Preferences.uniqueDeviceId.defaultValue
+        ) {
+            getSettingsPreferences().storeProperty(
+                Preferences.uniqueDeviceId.withValue(UniqueIDProvider.generateUniqueDeviceId())
+            )
         }
+
+        println(packageManager.hasSystemFeature(PackageManager.FEATURE_WIFI_DIRECT))
 
         (application as BApplication).reloadPreferences()
 
-        log(this, LOG_LEVEL_INFO, "MainActivity", "Started with device-id ${getSettingsPreferences().readPropertyInt(Preferences.uniqueDeviceId)}")
+        log(
+            this,
+            LOG_LEVEL_INFO,
+            "MainActivity",
+            "Started with device-id ${getSettingsPreferences().readPropertyInt(Preferences.uniqueDeviceId)}"
+        )
 
         handlePermissions()
         startService(Intent(this, LocationService::class.java))
         startService(Intent(this, ActivityRecognitionService::class.java))
         startService(Intent(this, LocationBroadcastReceiverService::class.java))
+        // startService(Intent(this, WifiP2PService::class.java))
 
         registerReceiver(BatteryChangedReceiver(), IntentFilter(Intent.ACTION_BATTERY_CHANGED))
     }

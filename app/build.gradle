@@ -72,5 +72,5 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:17.1.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation group: 'gov.nasa', name: 'worldwind', version: '2.0.0-986'
-    implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '3.8.0'
+    implementation group: 'com.google.protobuf', name: 'protobuf-java', version: '3.14.0'
 }

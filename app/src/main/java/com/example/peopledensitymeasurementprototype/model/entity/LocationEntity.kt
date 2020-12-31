@@ -43,4 +43,3 @@ data class LocationEntity(
     @NonNull
     val northernHemisphere: Boolean
 )
-

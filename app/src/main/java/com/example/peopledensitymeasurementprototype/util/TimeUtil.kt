@@ -1,8 +1,5 @@
 package com.example.peopledensitymeasurementprototype.util
 
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZoneOffset
 import java.util.*
 
 fun Date.formatForLog(): String {

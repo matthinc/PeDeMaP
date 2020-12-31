@@ -29,7 +29,10 @@ class MapFragment : Fragment() {
 
         val viewModel = ViewModelProvider(this).get(MapViewModel::class.java)
 
-        view.osm_map_view.setCurrentPosition(GeoPoint(DensityMapView.DEFAULT_CENTER.latitude(), DensityMapView.DEFAULT_CENTER.longitude()), 0f)
+        view.osm_map_view.setCurrentPosition(
+            GeoPoint(DensityMapView.DEFAULT_CENTER.latitude(), DensityMapView.DEFAULT_CENTER.longitude()),
+            0f
+        )
 
         val application = requireContext().applicationContext as BApplication
         view.osm_map_view.setDensityGrid(application.grid)
@@ -40,9 +43,14 @@ class MapFragment : Fragment() {
                 .withDeviceId(Random.nextInt())
                 .withTimestamp(epochSecondTimestamp())
                 .withAccuracy(10f)
+                .withTTL(10)
                 .build()
 
             application.sendLocationStrategy.sendSingleLocationData(fakeLocation.toSingleProto())
+        }
+
+        application.grid.observer = {
+            view.osm_map_view.redrawDensity()
         }
 
         viewModel.lastLocation.observe(
@@ -54,11 +62,12 @@ class MapFragment : Fragment() {
                     view.osm_map_view.controller.setCenter(locationGeoPoint)
                     view.osm_map_view.setCurrentGridLocation(
                         UTMLocation.newBuilder(
-                        location.zoneId,
-                        location.northing.toInt(),
-                        location.easting.toInt(),
-                        location.northernHemisphere
-                    ).build())
+                            location.zoneId,
+                            location.northing.toInt(),
+                            location.easting.toInt(),
+                            location.northernHemisphere
+                        ).build()
+                    )
                 }
             }
         )

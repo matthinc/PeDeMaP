@@ -1,6 +1,6 @@
 package com.example.peopledensitymeasurementprototype.density
 
-data class Density (val people: Double) {
+data class Density(val people: Double) {
     fun normalized(factor: Double): Density {
         return Density(people / factor)
     }
@@ -10,4 +10,4 @@ data class Density (val people: Double) {
     }
 }
 
-fun Iterable<Density>.sum() = Density( sumByDouble { it.people } )
+fun Iterable<Density>.sum() = Density(sumByDouble { it.people })

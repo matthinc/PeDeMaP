@@ -9,9 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.peopledensitymeasurementprototype.R
 import com.example.peopledensitymeasurementprototype.model.entity.*
 import com.example.peopledensitymeasurementprototype.util.formatForLog
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
 import java.util.*
 
 class LogViewAdapter(var entries: MutableList<LogEntity>, private val ctx: Context) :
@@ -40,14 +37,8 @@ class LogViewAdapter(var entries: MutableList<LogEntity>, private val ctx: Conte
 
         holder.level.text = label.text
         holder.level.setTextColor(label.color.toInt())
-
         holder.category.text = entry.category
-
-        holder.timestamp.text = Date(entry.timestamp).formatForLog()/*LocalDateTime.ofInstant(
-            Instant.ofEpochSecond(entry.timestamp),
-            ZoneId.systemDefault()
-        ).formatForLog()*/
-
+        holder.timestamp.text = Date(entry.timestamp * 1_000).formatForLog()
         holder.message.text = entry.message.replace(";", "\n")
     }
 

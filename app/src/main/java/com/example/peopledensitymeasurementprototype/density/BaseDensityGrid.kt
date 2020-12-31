@@ -1,18 +1,16 @@
 package com.example.peopledensitymeasurementprototype.density
 
 import com.example.peopledensitymeasurementprototype.density.strategy.DensityCalculationStrategy
-import com.example.peopledensitymeasurementprototype.density.strategy.RadiusNormalDistributedDensityCalculationStrategy
 import com.example.peopledensitymeasurementprototype.density.strategy.SimpleDensityCalculationStrategy
 import com.example.peopledensitymeasurementprototype.util.epochSecondTimestamp
-import com.example.peopledensitymeasurementprototype.util.log
 import java.util.*
 
-class BaseDensityGrid: DensityGrid {
+class BaseDensityGrid : DensityGrid {
 
     private val locationList = LinkedList<UTMLocation>()
     var densityCalculationStrategy: DensityCalculationStrategy = SimpleDensityCalculationStrategy()
 
-    var observer: (BaseDensityGrid)->Unit = {}
+    var observer: (BaseDensityGrid) -> Unit = {}
 
     var aging = true
 
@@ -52,5 +50,4 @@ class BaseDensityGrid: DensityGrid {
             observer(this)
         }
     }
-
 }

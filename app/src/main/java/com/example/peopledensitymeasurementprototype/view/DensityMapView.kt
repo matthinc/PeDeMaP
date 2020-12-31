@@ -4,11 +4,10 @@ import android.content.Context
 import android.location.Location
 import android.util.AttributeSet
 import com.example.peopledensitymeasurementprototype.BuildConfig
-import com.example.peopledensitymeasurementprototype.density.BaseDensityGrid
 import com.example.peopledensitymeasurementprototype.density.DensityGrid
+import com.example.peopledensitymeasurementprototype.density.UTMLocation
 import com.example.peopledensitymeasurementprototype.map.CurrentPositionMarker
 import com.example.peopledensitymeasurementprototype.map.DensityGridOverlay
-import com.example.peopledensitymeasurementprototype.density.UTMLocation
 import com.example.peopledensitymeasurementprototype.util.bApplication
 import org.osmdroid.config.Configuration
 import org.osmdroid.events.MapEventsReceiver
@@ -64,11 +63,14 @@ class DensityMapView(context: Context?, attrs: AttributeSet?) : MapView(context,
 
     fun setCurrentGridLocation(location: UTMLocation) {
         gridOverlay.cellPosition = location
-        gridOverlay.userPosition = location
     }
 
     fun setDensityGrid(grid: DensityGrid) {
         gridOverlay.densityGrid = grid
+    }
+
+    fun redrawDensity() {
+        controller.setZoom(DEFAULT_ZOOM)
     }
 
     companion object {

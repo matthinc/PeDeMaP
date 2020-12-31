@@ -1,17 +1,16 @@
 package com.example.peopledensitymeasurementprototype.service
 
-import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
-import android.provider.ContactsContract
-import com.example.peopledensitymeasurementprototype.model.proto.Single
+import com.example.peopledensitymeasurementprototype.model.entity.LOG_LEVEL_WARN
 import com.example.peopledensitymeasurementprototype.net.send.UDPBroadcastSend
 import com.example.peopledensitymeasurementprototype.receiver.NetworkLocationReceiver
+import com.example.peopledensitymeasurementprototype.util.log
+import java.net.BindException
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
-import kotlin.concurrent.thread
 
 class LocationBroadcastReceiverService : Service() {
 
@@ -29,7 +28,19 @@ class LocationBroadcastReceiverService : Service() {
 
         val listenThread = object : Thread() {
             override fun run() {
-                socket = DatagramSocket(UDPBroadcastSend.PORT, InetAddress.getByName("0.0.0.0"))
+                try {
+                    socket = DatagramSocket(UDPBroadcastSend.PORT, InetAddress.getByName("0.0.0.0"))
+                } catch (e: BindException) {
+                    log(
+                        this@LocationBroadcastReceiverService,
+                        LOG_LEVEL_WARN,
+                        "LocationBroadcastReceiverService",
+                        "Address :${UDPBroadcastSend.PORT} already in use"
+                    )
+
+                    return
+                }
+
                 val packet = DatagramPacket(receiveBuffer, UDPBroadcastSend.MAX_MESSAGE_SIZE)
 
                 while (!isInterrupted) {

@@ -1,8 +1,6 @@
 package com.example.peopledensitymeasurementprototype.map
 
 import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
 import android.graphics.Path
 import com.example.peopledensitymeasurementprototype.BApplication
 import com.example.peopledensitymeasurementprototype.density.*
@@ -22,8 +20,6 @@ class DensityGridOverlay(val application: BApplication) : Overlay() {
      */
     var cellPosition: UTMLocation = DensityMapView.DEFAULT_CENTER
 
-    var userPosition: UTMLocation = DensityMapView.DEFAULT_CENTER
-
     var densityGrid: DensityGrid? = null
 
     // Make sure gridSize is dividable by cellSize
@@ -33,6 +29,9 @@ class DensityGridOverlay(val application: BApplication) : Overlay() {
         if (canvas != null && projection != null) drawToCanvas(canvas, projection)
     }
 
+    /**
+     * Get path for a single Single cell
+     */
     private fun getCellPath(position: UTMLocation, projection: Projection, cellSize: Int): Path {
         fun UTMLocation.yP() = projection.getLongPixelYFromLatitude(this.latitude()).toFloat()
         fun UTMLocation.xP() = projection.getLongPixelXFromLongitude(this.longitude()).toFloat()
@@ -52,53 +51,20 @@ class DensityGridOverlay(val application: BApplication) : Overlay() {
 
         val gridCenteringRange = (-alignedGridSize until alignedGridSize step cellSize)
 
-        val drawSize = projection.metersToPixels(cellSize.toFloat())
-
         for (x in gridCenteringRange) {
             for (y in gridCenteringRange) {
+                // Current drawing position
                 val gridPosition = cellPosition.withOffset(y, x)
-
-                val drawX = projection.getLongPixelXFromLongitude(gridPosition.longitude()).toFloat()
-                val drawY = projection.getLongPixelYFromLatitude(gridPosition.latitude()).toFloat()
 
                 if (densityGrid != null) {
                     val density = densityGrid!!.getDensityAt(gridPosition)
 
+                    // Only draw cells with density > 0
                     if (density.people > 0) {
                         canvas.drawPath(getCellPath(gridPosition, projection, cellSize), getPaintForDensity(density))
                     }
                 }
-
             }
-        }
-
-        canvas.drawText(
-            userPosition.toString(),
-            projection.getLongPixelXFromLongitude(userPosition.longitude()).toFloat(),
-            projection.getLongPixelYFromLatitude(userPosition.latitude()).toFloat() + 50,
-            TEXT_PAINT
-        )
-
-    }
-
-    private fun getPaintForDensity(density: Density): Paint {
-        return Paint().also {
-            it.style = Paint.Style.FILL
-            it.color = densityToColorMapping(density)
-            it.alpha = 128
-        }
-    }
-
-    companion object {
-        private val BORDER_PAINT = Paint().also {
-            it.style = Paint.Style.STROKE
-            it.strokeWidth = 2f
-            it.color = Color.BLACK
-        }
-        private val TEXT_PAINT = Paint().also {
-            it.style = Paint.Style.FILL
-            it.color = Color.BLACK
-            it.textSize = 30f
         }
     }
 }

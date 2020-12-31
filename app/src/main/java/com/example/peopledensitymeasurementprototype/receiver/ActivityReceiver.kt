@@ -24,18 +24,22 @@ class ActivityReceiver : BroadcastReceiver() {
                     else -> "Unknown"
                 }
 
-                val transitionString = when(it.transitionType) {
+                val transitionString = when (it.transitionType) {
                     ActivityTransition.ACTIVITY_TRANSITION_EXIT -> "Exit"
                     ActivityTransition.ACTIVITY_TRANSITION_ENTER -> "Enter"
                     else -> "Unknown transition"
                 }
 
-                log(context, LOG_LEVEL_INFO, "Activity Transition", arrayOf<Any>(
-                    typeString,
-                    transitionString
-                ))
+                log(
+                    context,
+                    LOG_LEVEL_INFO,
+                    "Activity Transition",
+                    arrayOf<Any>(
+                        typeString,
+                        transitionString
+                    )
+                )
             }
-
         }
     }
 }

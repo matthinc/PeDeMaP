@@ -17,7 +17,6 @@ import com.example.peopledensitymeasurementprototype.receiver.LocationUpdateRece
 import com.example.peopledensitymeasurementprototype.util.*
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
-import java.net.URI
 
 class LocationService : Service() {
 
@@ -67,7 +66,12 @@ class LocationService : Service() {
         bApplication().currentLocationTTL = locationRequest.interval.toInt() / 500
 
         val intent = Intent(this, LocationUpdateReceiver::class.java)
-        pendingIntent = PendingIntent.getBroadcast(this, REQUEST_CODE_LOCATION_UPDATE, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+        pendingIntent = PendingIntent.getBroadcast(
+            this,
+            REQUEST_CODE_LOCATION_UPDATE,
+            intent,
+            PendingIntent.FLAG_CANCEL_CURRENT
+        )
 
         val locationTask = locationClient.requestLocationUpdates(locationRequest, pendingIntent)
 

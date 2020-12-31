@@ -2,7 +2,6 @@ package com.example.peopledensitymeasurementprototype.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,9 +39,12 @@ class PreferencesFragment : Fragment() {
             requireContext().apply {
                 stopService(serviceIntent)
 
-                Timer().schedule(timerTask {
-                    startService(serviceIntent)
-                }, 1500)
+                Timer().schedule(
+                    timerTask {
+                        startService(serviceIntent)
+                    },
+                    1500
+                )
             }
         }
 

@@ -3,7 +3,6 @@ package com.example.peopledensitymeasurementprototype.service
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
-import android.os.IBinder
 import com.example.peopledensitymeasurementprototype.model.entity.LOG_LEVEL_DEBUG
 import com.example.peopledensitymeasurementprototype.model.entity.LOG_LEVEL_ERROR
 import com.example.peopledensitymeasurementprototype.model.entity.LOG_LEVEL_WARN

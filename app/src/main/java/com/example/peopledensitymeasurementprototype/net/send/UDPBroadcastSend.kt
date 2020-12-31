@@ -3,7 +3,7 @@ package com.example.peopledensitymeasurementprototype.net.send
 import android.content.Context
 import com.example.peopledensitymeasurementprototype.model.entity.LOG_LEVEL_DEBUG
 import com.example.peopledensitymeasurementprototype.model.entity.LOG_LEVEL_WARN
-import com.example.peopledensitymeasurementprototype.model.proto.Single
+import com.example.peopledensitymeasurementprototype.model.proto.Definitions
 import com.example.peopledensitymeasurementprototype.util.log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -14,25 +14,30 @@ import java.net.DatagramSocket
 import java.net.InetAddress
 import java.net.NetworkInterface
 
-class UDPBroadcastSend(val context: Context): SendStrategy {
+class UDPBroadcastSend(val context: Context) : SendStrategy {
 
     private val socket by lazy {
         DatagramSocket().apply { broadcast = true }
     }
 
+    /**
+     * Get current WiFi Interface.
+     * @return [NetworkInterface] or [null] if no interface was found
+     */
     private fun getWifiInterface(): NetworkInterface? {
         return NetworkInterface.getNetworkInterfaces().toList().find {
-            it.name == "wlan0" || it.name == "eth0"
+            it.name == "wlan0" || it.name == "eth0" || it.name == "p2p0"
         }
     }
 
+    /**
+     * Get broadcast address of the current Wifi Interface
+     */
     private fun getBroadcastAddress(): InetAddress? {
-        val iface = getWifiInterface()
-        if (iface == null) return null
-        return iface.interfaceAddresses.find { it.broadcast != null } ?.broadcast
+        return (getWifiInterface() ?: return null).interfaceAddresses.find { it.broadcast != null }?.broadcast
     }
 
-    override fun sendSingleLocationData(data: Single.SingleLocationData) {
+    private fun sendByteData(bytes: ByteArray) {
         val broadcastAddress = getBroadcastAddress()
 
         if (broadcastAddress == null) {
@@ -43,8 +48,6 @@ class UDPBroadcastSend(val context: Context): SendStrategy {
         log(context, LOG_LEVEL_DEBUG, "UDPBroadcastSend", arrayOf<Any>("Send location to", broadcastAddress))
 
         GlobalScope.launch {
-
-            val bytes = data.toByteArray()
             val packet = DatagramPacket(bytes, bytes.size, broadcastAddress, PORT)
 
             withContext(Dispatchers.IO) {
@@ -56,5 +59,23 @@ class UDPBroadcastSend(val context: Context): SendStrategy {
     companion object {
         const val PORT = 1510
         const val MAX_MESSAGE_SIZE = 100
+    }
+
+    override fun sendMessage(data: Definitions.LocationMessageWrapper) {
+        sendByteData(data.toByteArray())
+    }
+
+    override fun sendSingleLocationData(data: Definitions.SingleLocationData) {
+        val wrapper = Definitions.LocationMessageWrapper.newBuilder().apply {
+            single = data
+        }.build()
+        sendMessage(wrapper)
+    }
+
+    override fun sendDensityMap(data: Definitions.DensityMap) {
+        val wrapper = Definitions.LocationMessageWrapper.newBuilder().apply {
+            map = data
+        }.build()
+        sendMessage(wrapper)
     }
 }

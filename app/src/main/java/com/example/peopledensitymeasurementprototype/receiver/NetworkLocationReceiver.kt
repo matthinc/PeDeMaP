@@ -4,9 +4,11 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.example.peopledensitymeasurementprototype.BApplication
+import com.example.peopledensitymeasurementprototype.density.ForeignDensityMap
 import com.example.peopledensitymeasurementprototype.density.UTMLocation
+import com.example.peopledensitymeasurementprototype.model.entity.LOG_LEVEL_DEBUG
 import com.example.peopledensitymeasurementprototype.model.entity.LOG_LEVEL_INFO
-import com.example.peopledensitymeasurementprototype.model.proto.Single
+import com.example.peopledensitymeasurementprototype.model.proto.Definitions
 import com.example.peopledensitymeasurementprototype.util.log
 
 class NetworkLocationReceiver : BroadcastReceiver() {
@@ -19,15 +21,33 @@ class NetworkLocationReceiver : BroadcastReceiver() {
                 log(context, LOG_LEVEL_INFO, "NetworkLocationReceiver", "Received new packet with size ${data.size}")
 
                 // Protobuf deserialize
-                val pb = Single.SingleLocationData.parseFrom(data)
+                val pb = Definitions.LocationMessageWrapper.parseFrom(data)
 
-                // Convert to UTM
-                val utmLocation = UTMLocation.builderFromSingleLocationProtobufObject(pb).build()
+                // Single location
+                if (pb.hasSingle()) {
+                    log(context, LOG_LEVEL_DEBUG, "NetworkLocationReceiver", "SingleLocation")
 
-                val application = context.applicationContext as BApplication
-                application.grid.add(utmLocation)
+                    // Convert to UTM
+                    val utmLocation = UTMLocation.builderFromSingleLocationProtobufObject(pb.single).build()
 
-                log(context, LOG_LEVEL_INFO, "NetworkLocationReceiver", "Integrated new location into grid. Grid includes information of ${application.grid.getNumberOfDevices()} devices.")
+                    val application = context.applicationContext as BApplication
+                    application.grid.add(utmLocation)
+
+                    log(
+                        context,
+                        LOG_LEVEL_INFO,
+                        "NetworkLocationReceiver",
+                        "Integrated new location into grid. Grid includes information " +
+                            "of ${application.grid.getNumberOfDevices()} devices."
+                    )
+                }
+
+                // Density map
+                if (pb.hasMap()) {
+                    log(context, LOG_LEVEL_DEBUG, "NetworkLocationReceiver", "DensityMap")
+
+                    val densityMap = ForeignDensityMap.Builder.fromProto(pb.map)
+                }
             }
         }
     }

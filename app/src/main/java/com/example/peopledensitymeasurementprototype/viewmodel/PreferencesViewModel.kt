@@ -3,8 +3,6 @@ package com.example.peopledensitymeasurementprototype.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import com.example.peopledensitymeasurementprototype.BApplication
-import com.example.peopledensitymeasurementprototype.density.strategy.RadiusNormalDistributedDensityCalculationStrategy
-import com.example.peopledensitymeasurementprototype.density.strategy.SimpleDensityCalculationStrategy
 import com.example.peopledensitymeasurementprototype.model.entity.LOG_LEVEL_INFO
 import com.example.peopledensitymeasurementprototype.util.*
 

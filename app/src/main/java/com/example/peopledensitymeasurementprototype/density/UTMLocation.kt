@@ -2,7 +2,7 @@ package com.example.peopledensitymeasurementprototype.density
 
 import android.location.Location
 import com.example.peopledensitymeasurementprototype.model.entity.LocationEntity
-import com.example.peopledensitymeasurementprototype.model.proto.Single
+import com.example.peopledensitymeasurementprototype.model.proto.Definitions
 import com.example.peopledensitymeasurementprototype.util.epochSecondTimestamp
 import com.example.peopledensitymeasurementprototype.util.sqr
 import com.example.peopledensitymeasurementprototype.util.sqrt
@@ -18,10 +18,10 @@ class UTMLocation internal constructor () {
     var zoneId: Int = 0
         private set
 
-    var northing : Int = 0
+    var northing: Int = 0
         private set
 
-    var easting : Int = 0
+    var easting: Int = 0
         private set
 
     var northernHemisphere: Boolean = true
@@ -60,13 +60,20 @@ class UTMLocation internal constructor () {
 
     fun latitude(): Double {
         // Cache for performance
-        if (latitude == null) latitude = UTMCoord.fromUTM(zoneId, hemisphere(), easting.toDouble(), northing.toDouble()).latitude.degrees
+        if (latitude == null) {
+            latitude = UTMCoord.fromUTM(zoneId, hemisphere(), easting.toDouble(), northing.toDouble()).latitude.degrees
+        }
         return latitude!!
     }
 
     fun longitude(): Double {
         // Cache for performance
-        if (longitude == null) longitude = UTMCoord.fromUTM(zoneId, hemisphere(), easting.toDouble(), northing.toDouble()).longitude.degrees
+        if (longitude == null) longitude = UTMCoord.fromUTM(
+            zoneId,
+            hemisphere(),
+            easting.toDouble(),
+            northing.toDouble()
+        ).longitude.degrees
         return longitude!!
     }
 
@@ -119,7 +126,10 @@ class UTMLocation internal constructor () {
         }
 
         fun builderFromLocation(location: Location, cellSize: Int): Builder {
-            val coord = UTMCoord.fromLatLon(Angle.fromDegreesLatitude(location.latitude), Angle.fromDegreesLongitude(location.longitude))
+            val coord = UTMCoord.fromLatLon(
+                Angle.fromDegreesLatitude(location.latitude),
+                Angle.fromDegreesLongitude(location.longitude)
+            )
 
             // Align to grid
             val cellNorthing = (Math.floor(coord.northing) - Math.floor(coord.northing) % cellSize).toInt()
@@ -137,7 +147,7 @@ class UTMLocation internal constructor () {
                 .withSpeed(location.speed.toInt())
         }
 
-        fun builderFromSingleLocationProtobufObject(singleLocationData: Single.SingleLocationData): Builder {
+        fun builderFromSingleLocationProtobufObject(singleLocationData: Definitions.SingleLocationData): Builder {
             return newBuilder(
                 singleLocationData.zoneId,
                 singleLocationData.northing,
@@ -202,12 +212,11 @@ class UTMLocation internal constructor () {
             fun build(): UTMLocation {
                 return utmLocationObject
             }
-
         }
     }
 }
 
-fun UTMLocation.toLocationEntity() : LocationEntity {
+fun UTMLocation.toLocationEntity(): LocationEntity {
     if (preciseLat == null || preciseLon == null) {
         throw IllegalStateException("Precise location is null!")
     }
@@ -229,7 +238,7 @@ fun UTMLocation.toLocationEntity() : LocationEntity {
     )
 }
 
-fun UTMLocation.toSingleProto(): Single.SingleLocationData {
+fun UTMLocation.toSingleProto(): Definitions.SingleLocationData {
     if (accuracy == null) {
         throw IllegalStateException("Accuracy is null!")
     }
@@ -245,8 +254,11 @@ fun UTMLocation.toSingleProto(): Single.SingleLocationData {
     if (speed == null) {
         throw IllegalStateException("Speed location is null!")
     }
+    if (ttl == null) {
+        throw IllegalStateException("TTL is null!")
+    }
 
-    val proto = Single.SingleLocationData.newBuilder().apply {
+    val proto = Definitions.SingleLocationData.newBuilder().apply {
         accuracy = this@toSingleProto.accuracy!!
         bearing = this@toSingleProto.bearing!!.toInt()
         deviceId = this@toSingleProto.deviceId!!
@@ -261,7 +273,3 @@ fun UTMLocation.toSingleProto(): Single.SingleLocationData {
 
     return proto.build()
 }
-
-
-
-

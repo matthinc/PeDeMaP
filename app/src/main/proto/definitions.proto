@@ -14,3 +14,15 @@ message SingleLocationData {
   float accuracy = 9;
   int32 ttl = 10;
 }
+
+message DensityMap {
+  int32 senderDeviceId = 1;
+  repeated SingleLocationData data = 2;
+}
+
+message LocationMessageWrapper {
+  oneof msg {
+    SingleLocationData single = 1;
+    DensityMap map = 2;
+  }
+}
