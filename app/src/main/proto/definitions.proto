@@ -20,9 +20,17 @@ message DensityMap {
   repeated SingleLocationData data = 2;
 }
 
+message WarnMessage {
+  string message = 1;
+  int64 validUntil = 2;
+  double latitude = 3;
+  double longitude = 4;
+}
+
 message LocationMessageWrapper {
   oneof msg {
     SingleLocationData single = 1;
     DensityMap map = 2;
+    WarnMessage message = 3;
   }
 }

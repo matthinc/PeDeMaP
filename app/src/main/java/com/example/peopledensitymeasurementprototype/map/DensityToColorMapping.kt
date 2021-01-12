@@ -18,10 +18,10 @@ fun densityToColorMapping(density: Density): Int {
         else -> listOf(0.4f, 0.9f, -16.36f, 30f)
     }
 
-    val hue = splineCoefficients[0] * d.pow(3)
-    + splineCoefficients[1] * d.pow(2)
-    + splineCoefficients[2] * d
-    + splineCoefficients[3]
+    val hue = splineCoefficients[0] * d.pow(3) +
+        splineCoefficients[1] * d.pow(2) +
+        splineCoefficients[2] * d +
+        splineCoefficients[3]
 
     return Color.HSVToColor(floatArrayOf(hue.toFloat(), 1f, 1f))
 }

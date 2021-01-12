@@ -26,7 +26,7 @@ class LocationUpdateReceiver : BroadcastReceiver() {
 
             // Convert location to grid location
             val gridLocation = UTMLocation.builderFromLocation(location, context.bApplication().cellSize)
-                .withDeviceId(context.getSettingsPreferences().readPropertyInt(Preferences.uniqueDeviceId))
+                .withDeviceId(context.bApplication().getDeviceId())
                 .withTimestamp(epochSecondTimestamp())
                 .withTTL(context.bApplication().currentLocationTTL)
                 .build()

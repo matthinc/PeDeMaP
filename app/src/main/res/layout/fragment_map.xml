@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".fragment.MapFragment">
 
-    <com.example.peopledensitymeasurementprototype.view.DensityMapView
+    <com.example.peopledensitymeasurementprototype.map.DensityMapView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/osm_map_view"/>

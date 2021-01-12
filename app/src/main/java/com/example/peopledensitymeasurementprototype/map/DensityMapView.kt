@@ -1,13 +1,14 @@
-package com.example.peopledensitymeasurementprototype.view
+package com.example.peopledensitymeasurementprototype.map
 
 import android.content.Context
 import android.location.Location
 import android.util.AttributeSet
 import com.example.peopledensitymeasurementprototype.BuildConfig
+import com.example.peopledensitymeasurementprototype.R
 import com.example.peopledensitymeasurementprototype.density.DensityGrid
 import com.example.peopledensitymeasurementprototype.density.UTMLocation
-import com.example.peopledensitymeasurementprototype.map.CurrentPositionMarker
-import com.example.peopledensitymeasurementprototype.map.DensityGridOverlay
+import com.example.peopledensitymeasurementprototype.messages.WarnMessage
+import com.example.peopledensitymeasurementprototype.model.proto.Definitions
 import com.example.peopledensitymeasurementprototype.util.bApplication
 import org.osmdroid.config.Configuration
 import org.osmdroid.events.MapEventsReceiver
@@ -15,6 +16,8 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.MapEventsOverlay
+import org.osmdroid.views.overlay.Marker
+import java.util.*
 
 class DensityMapView(context: Context?, attrs: AttributeSet?) : MapView(context, attrs), MapEventsReceiver {
 
@@ -26,6 +29,8 @@ class DensityMapView(context: Context?, attrs: AttributeSet?) : MapView(context,
         overlays.add(marker)
         marker
     }
+
+    private val warnMessages = LinkedList<Marker>()
 
     private val gridOverlay: DensityGridOverlay
 
@@ -71,6 +76,27 @@ class DensityMapView(context: Context?, attrs: AttributeSet?) : MapView(context,
 
     fun redrawDensity() {
         controller.setZoom(DEFAULT_ZOOM)
+    }
+
+    fun removeWarnMessages() {
+        warnMessages.forEach { overlays.remove(it) }
+        warnMessages.clear()
+    }
+
+    fun addWarnMessage(message: WarnMessage) {
+        val marker = Marker(this)
+        marker.position = GeoPoint(message.latitude, message.longitude)
+        marker.title = message.message
+        marker.icon = context.getDrawable(R.drawable.ic_baseline_warning_24)
+        overlays.add(marker)
+
+        warnMessages.add(marker)
+
+    }
+
+    fun setWarnMessages(messages: Collection<WarnMessage>) {
+        removeWarnMessages()
+        messages.forEach(this::addWarnMessage)
     }
 
     companion object {

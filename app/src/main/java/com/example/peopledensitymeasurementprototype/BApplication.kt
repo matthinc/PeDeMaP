@@ -4,6 +4,7 @@ import android.app.Application
 import com.example.peopledensitymeasurementprototype.density.BaseDensityGrid
 import com.example.peopledensitymeasurementprototype.density.strategy.RadiusNormalDistributedDensityCalculationStrategy
 import com.example.peopledensitymeasurementprototype.density.strategy.SimpleDensityCalculationStrategy
+import com.example.peopledensitymeasurementprototype.messages.WarnMessageManager
 import com.example.peopledensitymeasurementprototype.net.send.UDPBroadcastSend
 import com.example.peopledensitymeasurementprototype.util.Preferences
 import com.example.peopledensitymeasurementprototype.util.getSettingsPreferences
@@ -17,6 +18,8 @@ class BApplication() : Application() {
 
     var currentLocationTTL = 0
 
+    val warnMessageManager = WarnMessageManager()
+
     val cellSize by lazy {
         getSettingsPreferences().readPropertyInt(Preferences.cellSize)
     }
@@ -27,5 +30,9 @@ class BApplication() : Application() {
             else -> SimpleDensityCalculationStrategy()
         }
         grid.aging = getSettingsPreferences().readPropertyBoolean(Preferences.aging)
+    }
+
+    fun getDeviceId(): Int {
+        return getSettingsPreferences().readPropertyInt(Preferences.uniqueDeviceId)
     }
 }

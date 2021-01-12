@@ -6,7 +6,6 @@ import com.example.peopledensitymeasurementprototype.util.epochSecondTimestamp
 import java.util.*
 
 class BaseDensityGrid : DensityGrid {
-
     private val locationList = LinkedList<UTMLocation>()
     var densityCalculationStrategy: DensityCalculationStrategy = SimpleDensityCalculationStrategy()
 
@@ -30,13 +29,32 @@ class BaseDensityGrid : DensityGrid {
         observer(this)
     }
 
+    override fun integrate(grid: ForeignDensityMap) {
+        grid.locations.forEach(this::add)
+    }
+
     override fun getDensityAt(utmLocation: UTMLocation): Density {
-        if (aging) performAging()
+        purge()
         return densityCalculationStrategy.calculateDensityAt(locationList, utmLocation)
     }
 
     override fun getNumberOfDevices(): Int {
         return locationList.size
+    }
+
+    override fun getForeignDensityMap(ownDeviceId: Int): ForeignDensityMap {
+        return ForeignDensityMap.Builder()
+            .setLocations(locationList)
+            .setSender(ownDeviceId)
+            .build()
+    }
+
+    override fun containsDeviceId(deviceId: Int): Boolean {
+        return locationList.find { it.deviceId == deviceId } != null
+    }
+
+    override fun purge() {
+        if (aging) performAging()
     }
 
     private fun LinkedList<UTMLocation>.updateByDeviceId(location: UTMLocation) {

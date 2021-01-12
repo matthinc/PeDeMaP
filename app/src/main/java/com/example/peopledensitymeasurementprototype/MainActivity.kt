@@ -45,6 +45,9 @@ class MainActivity : AppCompatActivity() {
             notificationManager.createNotificationChannel(
                 NotificationChannel(NOTIFICATION_CHANNEL_ID, "Test", NotificationManager.IMPORTANCE_LOW)
             )
+            notificationManager.createNotificationChannel(
+                NotificationChannel(WARN_MESSAGE_NOTIFICATION_CHANNEL_ID, "Warn", NotificationManager.IMPORTANCE_DEFAULT)
+            )
         }
 
         // Generate device id
@@ -89,5 +92,6 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val NOTIFICATION_CHANNEL_ID = "ba_mru-chanel"
+        const val WARN_MESSAGE_NOTIFICATION_CHANNEL_ID = "ba_mru-warn"
     }
 }

@@ -78,4 +78,11 @@ class UDPBroadcastSend(val context: Context) : SendStrategy {
         }.build()
         sendMessage(wrapper)
     }
+
+    override fun sendWarnMessage(data: Definitions.WarnMessage) {
+        val wrapper = Definitions.LocationMessageWrapper.newBuilder().apply {
+            message = data
+        }.build()
+        sendMessage(wrapper)
+    }
 }

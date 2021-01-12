@@ -4,7 +4,6 @@ import android.graphics.Canvas
 import android.graphics.Path
 import com.example.peopledensitymeasurementprototype.BApplication
 import com.example.peopledensitymeasurementprototype.density.*
-import com.example.peopledensitymeasurementprototype.view.DensityMapView
 import org.osmdroid.views.Projection
 import org.osmdroid.views.overlay.Overlay
 

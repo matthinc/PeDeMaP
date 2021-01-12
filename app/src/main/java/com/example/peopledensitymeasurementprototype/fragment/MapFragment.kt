@@ -1,5 +1,6 @@
 package com.example.peopledensitymeasurementprototype.fragment
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,14 +12,16 @@ import com.example.peopledensitymeasurementprototype.BApplication
 import com.example.peopledensitymeasurementprototype.R
 import com.example.peopledensitymeasurementprototype.density.UTMLocation
 import com.example.peopledensitymeasurementprototype.density.toSingleProto
+import com.example.peopledensitymeasurementprototype.messages.WarnMessage
 import com.example.peopledensitymeasurementprototype.util.*
-import com.example.peopledensitymeasurementprototype.view.DensityMapView
+import com.example.peopledensitymeasurementprototype.map.DensityMapView
 import com.example.peopledensitymeasurementprototype.viewmodel.MapViewModel
 import kotlinx.android.synthetic.main.fragment_map.view.*
 import org.osmdroid.util.GeoPoint
 import kotlin.random.Random
 
 class MapFragment : Fragment() {
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,15 +41,44 @@ class MapFragment : Fragment() {
         view.osm_map_view.setDensityGrid(application.grid)
 
         view.osm_map_view.onLongClick = {
-            // Send fake location
-            val fakeLocation = UTMLocation.builderFromLocation(it, requireContext().bApplication().cellSize)
-                .withDeviceId(Random.nextInt())
-                .withTimestamp(epochSecondTimestamp())
-                .withAccuracy(10f)
-                .withTTL(10)
-                .build()
 
-            application.sendLocationStrategy.sendSingleLocationData(fakeLocation.toSingleProto())
+            fun sendFakeLocation() {
+                val fakeLocation = UTMLocation.builderFromLocation(it, requireContext().bApplication().cellSize)
+                    .withDeviceId(Random.nextInt())
+                    .withTimestamp(epochSecondTimestamp())
+                    .withAccuracy(10f)
+                    .withTTL(60)
+                    .build()
+
+                application.sendLocationStrategy.sendSingleLocationData(fakeLocation.toSingleProto())
+            }
+
+            fun sendWarnMessage() {
+                val message = WarnMessage(
+                    "Warn message from ${requireContext().bApplication().getDeviceId()}",
+                    epochSecondTimestamp() + 60,
+                    it.latitude,
+                    it.longitude
+                )
+
+                application.sendLocationStrategy.sendWarnMessage(message.toProto())
+            }
+
+            val builder = AlertDialog.Builder(context).apply {
+                setTitle("Send...")
+                setItems(arrayOf("Fake location", "Warn message")) { dialog, which ->
+                    when (which) {
+                        0 -> sendFakeLocation()
+                        1 -> sendWarnMessage()
+                    }
+                    dialog.cancel()
+                }
+            }
+            builder.show()
+        }
+
+        application.warnMessageManager.observer = {
+            view.osm_map_view.setWarnMessages(it.getAll())
         }
 
         application.grid.observer = {
