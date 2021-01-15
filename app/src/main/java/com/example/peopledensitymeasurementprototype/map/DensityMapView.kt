@@ -8,7 +8,6 @@ import com.example.peopledensitymeasurementprototype.R
 import com.example.peopledensitymeasurementprototype.density.DensityGrid
 import com.example.peopledensitymeasurementprototype.density.UTMLocation
 import com.example.peopledensitymeasurementprototype.messages.WarnMessage
-import com.example.peopledensitymeasurementprototype.model.proto.Definitions
 import com.example.peopledensitymeasurementprototype.util.bApplication
 import org.osmdroid.config.Configuration
 import org.osmdroid.events.MapEventsReceiver
@@ -91,7 +90,6 @@ class DensityMapView(context: Context?, attrs: AttributeSet?) : MapView(context,
         overlays.add(marker)
 
         warnMessages.add(marker)
-
     }
 
     fun setWarnMessages(messages: Collection<WarnMessage>) {

@@ -3,7 +3,7 @@ package com.example.peopledensitymeasurementprototype.messages
 import com.example.peopledensitymeasurementprototype.model.proto.Definitions
 import com.example.peopledensitymeasurementprototype.util.epochSecondTimestamp
 
-data class WarnMessage (
+data class WarnMessage(
     val message: String,
     val validUntil: Long,
     val latitude: Double,
@@ -28,5 +28,4 @@ data class WarnMessage (
             return WarnMessage(proto.message, proto.validUntil, proto.latitude, proto.longitude)
         }
     }
-
 }

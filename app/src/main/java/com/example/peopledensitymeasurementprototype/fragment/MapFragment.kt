@@ -12,16 +12,15 @@ import com.example.peopledensitymeasurementprototype.BApplication
 import com.example.peopledensitymeasurementprototype.R
 import com.example.peopledensitymeasurementprototype.density.UTMLocation
 import com.example.peopledensitymeasurementprototype.density.toSingleProto
+import com.example.peopledensitymeasurementprototype.map.DensityMapView
 import com.example.peopledensitymeasurementprototype.messages.WarnMessage
 import com.example.peopledensitymeasurementprototype.util.*
-import com.example.peopledensitymeasurementprototype.map.DensityMapView
 import com.example.peopledensitymeasurementprototype.viewmodel.MapViewModel
 import kotlinx.android.synthetic.main.fragment_map.view.*
 import org.osmdroid.util.GeoPoint
 import kotlin.random.Random
 
 class MapFragment : Fragment() {
-
 
     override fun onCreateView(
         inflater: LayoutInflater,

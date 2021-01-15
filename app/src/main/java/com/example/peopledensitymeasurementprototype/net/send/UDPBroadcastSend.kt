@@ -58,7 +58,7 @@ class UDPBroadcastSend(val context: Context) : SendStrategy {
 
     companion object {
         const val PORT = 1510
-        const val MAX_MESSAGE_SIZE = 100
+        const val MAX_MESSAGE_SIZE = 300
     }
 
     override fun sendMessage(data: Definitions.LocationMessageWrapper) {

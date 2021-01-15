@@ -46,7 +46,11 @@ class MainActivity : AppCompatActivity() {
                 NotificationChannel(NOTIFICATION_CHANNEL_ID, "Test", NotificationManager.IMPORTANCE_LOW)
             )
             notificationManager.createNotificationChannel(
-                NotificationChannel(WARN_MESSAGE_NOTIFICATION_CHANNEL_ID, "Warn", NotificationManager.IMPORTANCE_DEFAULT)
+                NotificationChannel(
+                    WARN_MESSAGE_NOTIFICATION_CHANNEL_ID,
+                    "Warn",
+                    NotificationManager.IMPORTANCE_DEFAULT
+                )
             )
         }
 
@@ -77,6 +81,15 @@ class MainActivity : AppCompatActivity() {
         // startService(Intent(this, WifiP2PService::class.java))
 
         registerReceiver(BatteryChangedReceiver(), IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        // Permission granted -> restart location service
+        if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            restartService(Intent(this, LocationService::class.java))
+        }
     }
 
     private fun handlePermissions() {

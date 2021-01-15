@@ -87,7 +87,10 @@ class LocationService : Service() {
     }
 
     private fun stopLocationUpdates() {
-        locationClient.removeLocationUpdates(pendingIntent)
+        if (::pendingIntent.isInitialized) {
+            locationClient.removeLocationUpdates(pendingIntent)
+        }
+
         log(this, LOG_LEVEL_WARN, "Location", "Stop location updates")
     }
 

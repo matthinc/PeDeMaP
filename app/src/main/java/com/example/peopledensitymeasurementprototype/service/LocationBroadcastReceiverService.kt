@@ -3,6 +3,7 @@ package com.example.peopledensitymeasurementprototype.service
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import com.example.peopledensitymeasurementprototype.model.entity.LOG_LEVEL_DEBUG
 import com.example.peopledensitymeasurementprototype.model.entity.LOG_LEVEL_WARN
 import com.example.peopledensitymeasurementprototype.net.send.UDPBroadcastSend
 import com.example.peopledensitymeasurementprototype.receiver.NetworkLocationReceiver
@@ -50,6 +51,13 @@ class LocationBroadcastReceiverService : Service() {
 
                     // Resize buffer to actual value
                     val receivedData = packet.data.take(packet.length).toByteArray()
+
+                    log(
+                        applicationContext,
+                        LOG_LEVEL_DEBUG,
+                        "LocationBroadcastReceiverService",
+                        "Received ${packet.length} bytes of data"
+                    )
 
                     intent.putExtra("data", receivedData)
                     sendBroadcast(intent)

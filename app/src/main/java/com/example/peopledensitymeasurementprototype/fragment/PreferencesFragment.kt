@@ -11,9 +11,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.peopledensitymeasurementprototype.R
 import com.example.peopledensitymeasurementprototype.databinding.FragmentPreferencesBinding
 import com.example.peopledensitymeasurementprototype.service.LocationService
+import com.example.peopledensitymeasurementprototype.util.restartService
 import com.example.peopledensitymeasurementprototype.viewmodel.PreferencesViewModel
 import java.util.*
-import kotlin.concurrent.timerTask
 
 class PreferencesFragment : Fragment() {
 
@@ -35,17 +35,7 @@ class PreferencesFragment : Fragment() {
         // Restart location service
         binding.restartLocationService.setOnClickListener {
             val serviceIntent = Intent(context, LocationService::class.java)
-
-            requireContext().apply {
-                stopService(serviceIntent)
-
-                Timer().schedule(
-                    timerTask {
-                        startService(serviceIntent)
-                    },
-                    1500
-                )
-            }
+            requireContext().restartService(serviceIntent)
         }
 
         return binding.root

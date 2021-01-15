@@ -5,7 +5,7 @@ import java.util.*
 class WarnMessageManager {
     private val messages = hashSetOf<WarnMessage>()
 
-    var observer: (WarnMessageManager)->Unit = {}
+    var observer: (WarnMessageManager) -> Unit = {}
 
     private fun removeInvalid() {
         messages.removeIf(WarnMessage::isInvalid)
