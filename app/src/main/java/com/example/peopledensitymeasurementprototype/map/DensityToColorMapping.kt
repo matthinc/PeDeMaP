@@ -9,7 +9,7 @@ fun densityToColorMapping(density: Density): Int {
     val d = density.people
 
     // Coefficients for the interpolated spline function
-    // For exaple: 1, 2, 3, 4 -> 1x^3 + 2x^2 + 3x + 4
+    // For example: 1, 2, 3, 4 -> 1x^3 + 2x^2 + 3x + 4
     val splineCoefficients = when (d) {
         in 0f..0.2f -> listOf(11427.41f, -1635.48f, -830.0f, 240.0f)
         in 0.2f..1f -> listOf(-79.3f, 142.07f, -112.9f, 100f)

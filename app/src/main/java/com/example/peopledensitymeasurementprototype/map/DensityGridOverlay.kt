@@ -4,6 +4,11 @@ import android.graphics.Canvas
 import android.graphics.Path
 import com.example.peopledensitymeasurementprototype.BApplication
 import com.example.peopledensitymeasurementprototype.density.*
+import com.example.peopledensitymeasurementprototype.getDatabase
+import com.example.peopledensitymeasurementprototype.model.entity.DensityMapEntity
+import com.example.peopledensitymeasurementprototype.util.epochSecondTimestamp
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.osmdroid.views.Projection
 import org.osmdroid.views.overlay.Overlay
 
@@ -61,6 +66,19 @@ class DensityGridOverlay(val application: BApplication) : Overlay() {
                     // Only draw cells with density > 0
                     if (density.people > 0) {
                         canvas.drawPath(getCellPath(gridPosition, projection, cellSize), getPaintForDensity(density))
+
+                        // Also save density to database
+                        GlobalScope.launch {
+                            getDatabase(application).densityMapDao().insertDensity(
+                                DensityMapEntity(
+                                    0,
+                                    gridPosition.northing,
+                                    gridPosition.easting,
+                                    epochSecondTimestamp(),
+                                    density.people
+                                )
+                            )
+                        }
                     }
                 }
             }

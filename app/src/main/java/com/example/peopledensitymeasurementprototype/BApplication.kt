@@ -4,7 +4,7 @@ import android.app.Application
 import com.example.peopledensitymeasurementprototype.density.BaseDensityGrid
 import com.example.peopledensitymeasurementprototype.density.strategy.RadiusNormalDistributedDensityCalculationStrategy
 import com.example.peopledensitymeasurementprototype.density.strategy.SimpleDensityCalculationStrategy
-import com.example.peopledensitymeasurementprototype.messages.WarnMessageManager
+import com.example.peopledensitymeasurementprototype.messages.MessageManager
 import com.example.peopledensitymeasurementprototype.net.send.UDPBroadcastSend
 import com.example.peopledensitymeasurementprototype.util.Preferences
 import com.example.peopledensitymeasurementprototype.util.getSettingsPreferences
@@ -18,7 +18,7 @@ class BApplication() : Application() {
 
     var currentLocationTTL = 0
 
-    val warnMessageManager = WarnMessageManager()
+    val warnMessageManager = MessageManager()
 
     val cellSize by lazy {
         getSettingsPreferences().readPropertyInt(Preferences.cellSize)

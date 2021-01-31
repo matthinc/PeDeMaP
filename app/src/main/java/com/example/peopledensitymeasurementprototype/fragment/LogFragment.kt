@@ -12,9 +12,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.peopledensitymeasurementprototype.R
 import com.example.peopledensitymeasurementprototype.adapter.LogViewAdapter
+import com.example.peopledensitymeasurementprototype.getDatabase
 import com.example.peopledensitymeasurementprototype.model.entity.LogEntity
 import com.example.peopledensitymeasurementprototype.viewmodel.LogFragmentViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class LogFragment : Fragment(), Observer<List<LogEntity>> {
 
@@ -39,6 +42,14 @@ class LogFragment : Fragment(), Observer<List<LogEntity>> {
         val logFab = view.findViewById<FloatingActionButton>(R.id.log_fab)
         logFab.setOnClickListener {
             viewModel.logRepository.deleteAll()
+
+            // Also delete all other values from the database
+            getDatabase(requireContext()).let {
+                GlobalScope.launch {
+                    it.densityMapDao().deleteAll()
+                    it.locationDao().deleteAll()
+                }
+            }
         }
 
         val shareLogFab = view.findViewById<FloatingActionButton>(R.id.share_log_fab)

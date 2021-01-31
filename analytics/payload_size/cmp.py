@@ -42,13 +42,17 @@ def to_proto(paylaod):
 
 sizes = []
 
-for _ in range(0, 10000):
+for _ in range(0, 10):
     payload = provide_random_data()
     
     payload_json = to_json(payload)
     payload_proto = to_proto(payload)
     payload_json_zip = gzip.compress(payload_json.encode('utf-8'))
     payload_proto_zip = gzip.compress(payload_proto)
+
+    f = open('./proto.bin', 'wb')
+    f.write(payload_proto)
+    f.close()
 
     sizes.append(
         (len(payload_json.encode('utf-8')), len(payload_json_zip), len(payload_proto), len(payload_proto_zip))

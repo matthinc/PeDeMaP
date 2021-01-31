@@ -13,4 +13,7 @@ interface LocationDao {
 
     @Query("SELECT * FROM location_table ORDER BY timestamp DESC LIMIT 1")
     fun getLastLocation(): LiveData<LocationEntity>
+
+    @Query("DELETE FROM location_table")
+    fun deleteAll()
 }
