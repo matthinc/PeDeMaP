@@ -6,7 +6,9 @@ import com.example.peopledensitymeasurementprototype.BApplication
 import com.example.peopledensitymeasurementprototype.density.*
 import com.example.peopledensitymeasurementprototype.getDatabase
 import com.example.peopledensitymeasurementprototype.model.entity.DensityMapEntity
+import com.example.peopledensitymeasurementprototype.model.entity.LOG_LEVEL_DEBUG
 import com.example.peopledensitymeasurementprototype.util.epochSecondTimestamp
+import com.example.peopledensitymeasurementprototype.util.log
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.osmdroid.views.Projection
@@ -53,6 +55,9 @@ class DensityGridOverlay(val application: BApplication) : Overlay() {
     private fun drawToCanvas(canvas: Canvas, projection: Projection) {
         val cellSize = application.cellSize
 
+        val startTime = System.currentTimeMillis()
+        var numberOfCells = 0
+
         val gridCenteringRange = (-alignedGridSize until alignedGridSize step cellSize)
 
         for (x in gridCenteringRange) {
@@ -65,6 +70,7 @@ class DensityGridOverlay(val application: BApplication) : Overlay() {
 
                     // Only draw cells with density > 0
                     if (density.people > 0) {
+                        numberOfCells++
                         canvas.drawPath(getCellPath(gridPosition, projection, cellSize), getPaintForDensity(density))
 
                         // Also save density to database
@@ -83,5 +89,9 @@ class DensityGridOverlay(val application: BApplication) : Overlay() {
                 }
             }
         }
+
+        // Log number of cells and duration
+        val duration = System.currentTimeMillis() - startTime
+        //log(application, LOG_LEVEL_DEBUG, "DensityGridOverlay", "$numberOfCells $duration")
     }
 }
