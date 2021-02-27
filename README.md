@@ -9,5 +9,5 @@ The application works without a centralized server and uses broadcast messages s
 
 ## License
 
-This application was created as part of my Bachelors Thesis at Hochschule München.
-The project is published unter the Apache License, Version 2.0.
+This application was created as part of my Bachelors thesis at Hochschule München.
+The project is published unter the Apache License, version 2.0.
