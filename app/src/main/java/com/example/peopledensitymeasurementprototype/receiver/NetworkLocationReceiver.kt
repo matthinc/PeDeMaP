@@ -112,6 +112,9 @@ class NetworkLocationReceiver : BroadcastReceiver() {
         // Convert to UTM
         val utmLocation = UTMLocation.builderFromSingleLocationProtobufObject(pb.single).build()
 
+        // Log device ID
+        log(context, LOG_LEVEL_INFO, "NetworkLocationReceiver", "Device ID: " + utmLocation.deviceId)
+
         // If device is new, send complete density map
         if (!application.grid.containsDeviceId(utmLocation.deviceId!!)) {
             application.sendLocationStrategy.sendDensityMap(

@@ -1,0 +1,7 @@
+1) vim /var/lib/dpkg/statoverride
+remove line messagebus (idk why)
+2) apt-get update
+3) apt-get install libprotobuf-dev
+4) apt-get install protobuf-compiler
+5) protoc --cpp_out=. definitions.proto
+6) add "OMNETPP_LIBS += -lprotobuf" to makefrag
