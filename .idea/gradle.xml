@@ -7,11 +7,10 @@
         <option name="testRunner" value="PLATFORM" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleJvm" value="11" />
         <option name="modules">
           <set>
-            <option value="/media/documents/Studium/BA/PeopleDensityMeasurementPrototype" />
-            <option value="/media/documents/Studium/BA/PeopleDensityMeasurementPrototype/app" />
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/app" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
