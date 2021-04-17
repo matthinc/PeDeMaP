@@ -10,12 +10,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import edu.hm.pedemap.R
 import edu.hm.pedemap.adapter.LogViewAdapter
 import edu.hm.pedemap.getDatabase
 import edu.hm.pedemap.model.entity.LogEntity
 import edu.hm.pedemap.viewmodel.LogFragmentViewModel
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 

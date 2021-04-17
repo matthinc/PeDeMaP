@@ -90,6 +90,6 @@ class DensityGridOverlay(val application: BApplication) : Overlay() {
 
         // Log number of cells and duration
         val duration = System.currentTimeMillis() - startTime
-        //log(application, LOG_LEVEL_DEBUG, "DensityGridOverlay", "$numberOfCells $duration")
+        // log(application, LOG_LEVEL_DEBUG, "DensityGridOverlay", "$numberOfCells $duration")
     }
 }

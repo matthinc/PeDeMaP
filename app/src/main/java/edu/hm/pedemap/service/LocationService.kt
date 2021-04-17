@@ -8,6 +8,8 @@ import android.content.pm.PackageManager
 import android.os.IBinder
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
 import edu.hm.pedemap.MainActivity
 import edu.hm.pedemap.R
 import edu.hm.pedemap.model.entity.LOG_LEVEL_DEBUG
@@ -15,8 +17,6 @@ import edu.hm.pedemap.model.entity.LOG_LEVEL_ERROR
 import edu.hm.pedemap.model.entity.LOG_LEVEL_WARN
 import edu.hm.pedemap.receiver.LocationUpdateReceiver
 import edu.hm.pedemap.util.*
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationServices
 
 class LocationService : Service() {
 

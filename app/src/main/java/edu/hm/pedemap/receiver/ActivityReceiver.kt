@@ -3,11 +3,11 @@ package edu.hm.pedemap.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import edu.hm.pedemap.model.entity.LOG_LEVEL_INFO
-import edu.hm.pedemap.util.log
 import com.google.android.gms.location.ActivityTransition
 import com.google.android.gms.location.ActivityTransitionResult
 import com.google.android.gms.location.DetectedActivity
+import edu.hm.pedemap.model.entity.LOG_LEVEL_INFO
+import edu.hm.pedemap.util.log
 
 class ActivityReceiver : BroadcastReceiver() {
 

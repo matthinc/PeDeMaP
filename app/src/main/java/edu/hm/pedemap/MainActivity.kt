@@ -14,6 +14,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import edu.hm.pedemap.density.UniqueIDProvider
 import edu.hm.pedemap.fragment.MapFragment
 import edu.hm.pedemap.model.entity.LOG_LEVEL_INFO
@@ -22,7 +23,6 @@ import edu.hm.pedemap.service.ActivityRecognitionService
 import edu.hm.pedemap.service.LocationBroadcastReceiverService
 import edu.hm.pedemap.service.LocationService
 import edu.hm.pedemap.util.*
-import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         when (BuildConfig.FLAVOR) {
-            "dev_ui"  -> setupDebugLayout()
+            "dev_ui" -> setupDebugLayout()
             "demo_ui" -> setupReleaseLayout()
         }
 

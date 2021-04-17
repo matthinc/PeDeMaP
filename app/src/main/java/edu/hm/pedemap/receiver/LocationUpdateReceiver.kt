@@ -3,6 +3,7 @@ package edu.hm.pedemap.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.google.android.gms.location.LocationResult
 import edu.hm.pedemap.density.UTMLocation
 import edu.hm.pedemap.density.toLocationEntity
 import edu.hm.pedemap.density.toSingleProto
@@ -11,7 +12,6 @@ import edu.hm.pedemap.model.entity.LOG_LEVEL_INFO
 import edu.hm.pedemap.model.entity.LOG_LEVEL_WARN
 import edu.hm.pedemap.repository.LocationRepository
 import edu.hm.pedemap.util.*
-import com.google.android.gms.location.LocationResult
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 

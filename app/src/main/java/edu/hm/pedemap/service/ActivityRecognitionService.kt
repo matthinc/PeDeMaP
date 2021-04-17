@@ -3,15 +3,15 @@ package edu.hm.pedemap.service
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import com.google.android.gms.location.ActivityRecognitionClient
+import com.google.android.gms.location.ActivityTransition
+import com.google.android.gms.location.ActivityTransitionRequest
+import com.google.android.gms.location.DetectedActivity
 import edu.hm.pedemap.model.entity.LOG_LEVEL_DEBUG
 import edu.hm.pedemap.model.entity.LOG_LEVEL_ERROR
 import edu.hm.pedemap.model.entity.LOG_LEVEL_WARN
 import edu.hm.pedemap.receiver.ActivityReceiver
 import edu.hm.pedemap.util.log
-import com.google.android.gms.location.ActivityRecognitionClient
-import com.google.android.gms.location.ActivityTransition
-import com.google.android.gms.location.ActivityTransitionRequest
-import com.google.android.gms.location.DetectedActivity
 
 class ActivityRecognitionService : Service() {
 

@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.NotificationCompat
+import com.google.protobuf.InvalidProtocolBufferException
 import edu.hm.pedemap.BApplication
 import edu.hm.pedemap.MainActivity
 import edu.hm.pedemap.R
@@ -16,7 +17,6 @@ import edu.hm.pedemap.model.entity.LOG_LEVEL_ERROR
 import edu.hm.pedemap.model.entity.LOG_LEVEL_INFO
 import edu.hm.pedemap.model.proto.Definitions
 import edu.hm.pedemap.util.log
-import com.google.protobuf.InvalidProtocolBufferException
 
 class NetworkLocationReceiver : BroadcastReceiver() {
 
