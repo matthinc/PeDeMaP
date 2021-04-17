@@ -15,6 +15,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.peopledensitymeasurementprototype.density.UniqueIDProvider
+import com.example.peopledensitymeasurementprototype.fragment.MapFragment
 import com.example.peopledensitymeasurementprototype.model.entity.LOG_LEVEL_INFO
 import com.example.peopledensitymeasurementprototype.receiver.BatteryChangedReceiver
 import com.example.peopledensitymeasurementprototype.service.ActivityRecognitionService
@@ -27,18 +28,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
-        val navController = findNavController(R.id.nav_host_fragment)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.navigation_map, R.id.navigation_log, R.id.navigation_preferences)
-        )
-
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+        when (BuildConfig.FLAVOR) {
+            "dev_ui"  -> setupDebugLayout()
+            "demo_ui" -> setupReleaseLayout()
+        }
 
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -81,6 +75,30 @@ class MainActivity : AppCompatActivity() {
         // startService(Intent(this, WifiP2PService::class.java))
 
         registerReceiver(BatteryChangedReceiver(), IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+    }
+
+    fun setupReleaseLayout() {
+        setContentView(R.layout.activity_main_release)
+
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_holder, MapFragment())
+            .commit()
+    }
+
+    fun setupDebugLayout() {
+        setContentView(R.layout.activity_main)
+        val navView: BottomNavigationView = findViewById(R.id.nav_view)
+
+        val navController = findNavController(R.id.nav_host_fragment)
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.navigation_map, R.id.navigation_log, R.id.navigation_preferences)
+        )
+
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

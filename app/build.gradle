@@ -45,6 +45,15 @@ android {
             }
         }
     }
+    flavorDimensions 'ui'
+    productFlavors {
+        demo_ui {
+            dimension 'ui'
+        }
+        dev_ui {
+            dimension 'ui'
+        }
+    }
 }
 
 

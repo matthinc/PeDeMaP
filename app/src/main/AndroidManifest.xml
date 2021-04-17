@@ -21,12 +21,8 @@
         <service
             android:name=".service.WifiP2PService"
             android:enabled="true"
-            android:exported="false"></service>
-
-        <receiver
-            android:name=".receiver.WifiP2PStateReceiver"
-            android:enabled="true"
             android:exported="false" />
+
         <receiver
             android:name=".receiver.NetworkLocationReceiver"
             android:enabled="true"
