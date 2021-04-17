@@ -1,7 +1,9 @@
 package edu.hm.pedemap.service
 
 import android.app.Service
+import android.content.Context
 import android.content.Intent
+import android.net.wifi.WifiManager
 import android.os.IBinder
 import edu.hm.pedemap.model.entity.LOG_LEVEL_DEBUG
 import edu.hm.pedemap.model.entity.LOG_LEVEL_WARN
@@ -20,6 +22,8 @@ class LocationBroadcastReceiverService : Service() {
     override fun onBind(intent: Intent): IBinder? = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val wifiManager = getSystemService(Context.WIFI_SERVICE) as WifiManager
+        wifiManager.createMulticastLock("mc_lock")
         listen()
         return super.onStartCommand(intent, flags, startId)
     }

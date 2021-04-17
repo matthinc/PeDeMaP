@@ -23,9 +23,9 @@ fun SharedPreferences.readPropertyBoolean(prop: Property<Boolean>): Boolean {
 
 object Preferences {
     val gpsInterval = Property<Int>("gps_interval", 5, arrayOf(5, 10, 15, 20, 25, 30, 60))
-    val smallestDisplacement = Property<Boolean>("smallest_displacement", true, emptyArray())
+    val smallestDisplacement = Property<Boolean>("smallest_displacement", false, emptyArray())
     val uniqueDeviceId = Property<Int>("device_id", 0, emptyArray())
-    val densityStrategy = Property<Int>("density_strategy", 0, emptyArray())
+    val densityStrategy = Property<Int>("density_strategy", 1, emptyArray())
     val aging = Property<Boolean>("aging", true, emptyArray())
     val cellSize = Property("cell_size", 5, arrayOf(1, 3, 5, 10, 20, 30, 100))
 }

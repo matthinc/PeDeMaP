@@ -63,7 +63,7 @@ class LocationService : Service() {
 
         val locationRequest = getLocationRequest()
 
-        bApplication().currentLocationTTL = locationRequest.interval.toInt() / 500
+        bApplication().currentLocationTTL = locationRequest.interval.toInt() / 250
 
         val intent = Intent(this, LocationUpdateReceiver::class.java)
         pendingIntent = PendingIntent.getBroadcast(
@@ -103,6 +103,8 @@ class LocationService : Service() {
 
             if (preferences.readPropertyBoolean(Preferences.smallestDisplacement)) {
                 smallestDisplacement = 5f
+            } else {
+                smallestDisplacement = 0f
             }
 
             // Force constant interval for repeatable measurements

@@ -7,7 +7,7 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.Projection
 import org.osmdroid.views.overlay.Overlay
 
-class CurrentPositionMarker(var position: GeoPoint, var radius: Float) : Overlay() {
+class CurrentPositionMarker(var position: GeoPoint, var radius: Float, val showRadius: Boolean) : Overlay() {
 
     override fun draw(canvas: Canvas?, projection: Projection?) {
         if (canvas != null && projection != null) drawToCanvas(canvas, projection)
@@ -18,7 +18,10 @@ class CurrentPositionMarker(var position: GeoPoint, var radius: Float) : Overlay
         val y = projection.getLongPixelYFromLatitude(position.latitude)
         val radius = projection.metersToPixels(radius)
 
-        canvas.drawCircle(x.toFloat(), y.toFloat(), radius, RADIUS_CIRCLE_PAINT)
+        if (showRadius) {
+            canvas.drawCircle(x.toFloat(), y.toFloat(), radius, RADIUS_CIRCLE_PAINT)
+        }
+
         canvas.drawCircle(x.toFloat(), y.toFloat(), POSITION_CENTER_RADIUS + 2, POSITION_CENTER_SHADOW_PAINT)
         canvas.drawCircle(x.toFloat(), y.toFloat(), POSITION_CENTER_RADIUS, POSITION_CENTER_PAINT)
     }

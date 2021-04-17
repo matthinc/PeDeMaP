@@ -23,7 +23,12 @@ class DensityMapView(context: Context?, attrs: AttributeSet?) : MapView(context,
     var onLongClick: (Location) -> Unit = {}
 
     private val currentPositionMarker by lazy {
-        val marker = CurrentPositionMarker(GeoPoint(DEFAULT_CENTER.latitude(), DEFAULT_CENTER.longitude()), 0f)
+        val marker = CurrentPositionMarker(
+            GeoPoint(DEFAULT_CENTER.latitude(),
+                DEFAULT_CENTER.longitude()),
+            0f,
+            BuildConfig.FLAVOR == "ui_dev"
+        )
 
         overlays.add(marker)
         marker

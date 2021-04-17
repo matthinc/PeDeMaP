@@ -1,6 +1,7 @@
 package edu.hm.pedemap.fragment
 
 import android.app.AlertDialog
+import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +10,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import edu.hm.pedemap.BApplication
+import edu.hm.pedemap.BuildConfig
 import edu.hm.pedemap.R
+import edu.hm.pedemap.density.BaseDensityGrid
 import edu.hm.pedemap.density.UTMLocation
 import edu.hm.pedemap.density.toSingleProto
 import edu.hm.pedemap.map.DensityMapView
@@ -18,6 +21,7 @@ import edu.hm.pedemap.util.*
 import edu.hm.pedemap.viewmodel.MapViewModel
 import kotlinx.android.synthetic.main.fragment_map.view.*
 import org.osmdroid.util.GeoPoint
+import java.util.*
 import kotlin.random.Random
 
 class MapFragment : Fragment() {
@@ -40,40 +44,7 @@ class MapFragment : Fragment() {
         view.osm_map_view.setDensityGrid(application.grid)
 
         view.osm_map_view.onLongClick = {
-
-            fun sendFakeLocation() {
-                val fakeLocation = UTMLocation.builderFromLocation(it, requireContext().bApplication().cellSize)
-                    .withDeviceId(Random.nextInt())
-                    .withTimestamp(epochSecondTimestamp())
-                    .withAccuracy(10f)
-                    .withTTL(60)
-                    .build()
-
-                application.sendLocationStrategy.sendSingleLocationData(fakeLocation.toSingleProto())
-            }
-
-            fun sendWarnMessage() {
-                val message = WarnMessage(
-                    "Warn message from ${requireContext().bApplication().getDeviceId()}",
-                    epochSecondTimestamp() + 60,
-                    it.latitude,
-                    it.longitude
-                )
-
-                application.sendLocationStrategy.sendWarnMessage(message.toProto())
-            }
-
-            val builder = AlertDialog.Builder(context).apply {
-                setTitle("Send...")
-                setItems(arrayOf("Fake location", "Warn message")) { dialog, which ->
-                    when (which) {
-                        0 -> sendFakeLocation()
-                        1 -> sendWarnMessage()
-                    }
-                    dialog.cancel()
-                }
-            }
-            builder.show()
+            debugMenu(application, it)
         }
 
         application.warnMessageManager.observer = {
@@ -83,6 +54,15 @@ class MapFragment : Fragment() {
         application.grid.observer = {
             view.osm_map_view.redrawDensity()
         }
+
+        // Perform aging process every second to update view
+        Timer().scheduleAtFixedRate(object: TimerTask() {
+            override fun run() {
+                this@MapFragment.activity?.runOnUiThread {
+                    application.grid.purge()
+                }
+            }
+        }, 1000, 1000)
 
         viewModel.lastLocation.observe(
             viewLifecycleOwner,
@@ -104,5 +84,43 @@ class MapFragment : Fragment() {
         )
 
         return view
+    }
+
+    private fun debugMenu(application: BApplication, loc: Location) {
+        if (BuildConfig.FLAVOR == "demo_ui") return
+
+        fun sendFakeLocation() {
+            val fakeLocation = UTMLocation.builderFromLocation(loc, requireContext().bApplication().cellSize)
+                .withDeviceId(Random.nextInt())
+                .withTimestamp(epochSecondTimestamp())
+                .withAccuracy(10f)
+                .withTTL(60)
+                .build()
+
+            application.sendLocationStrategy.sendSingleLocationData(fakeLocation.toSingleProto())
+        }
+
+        fun sendWarnMessage() {
+            val message = WarnMessage(
+                "Warn message from ${requireContext().bApplication().getDeviceId()}",
+                epochSecondTimestamp() + 60,
+                loc.latitude,
+                loc.longitude
+            )
+
+            application.sendLocationStrategy.sendWarnMessage(message.toProto())
+        }
+
+        val builder = AlertDialog.Builder(context).apply {
+            setTitle("Send...")
+            setItems(arrayOf("Fake location", "Warn message")) { dialog, which ->
+                when (which) {
+                    0 -> sendFakeLocation()
+                    1 -> sendWarnMessage()
+                }
+                dialog.cancel()
+            }
+        }
+        builder.show()
     }
 }
