@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/navigation_map"
-        android:name="com.example.peopledensitymeasurementprototype.fragment.MapFragment"
+        android:name="edu.hm.pedemap.fragment.MapFragment"
         android:label="@string/title_map"
         tools:layout="@layout/fragment_map" />
 
     <fragment
         android:id="@+id/navigation_log"
-        android:name="com.example.peopledensitymeasurementprototype.fragment.LogFragment"
+        android:name="edu.hm.pedemap.fragment.LogFragment"
         android:label="@string/title_log"
         tools:layout="@layout/fragment_log" />
 
     <fragment
         android:id="@+id/navigation_preferences"
-        android:name="com.example.peopledensitymeasurementprototype.fragment.PreferencesFragment"
+        android:name="edu.hm.pedemap.fragment.PreferencesFragment"
         android:label="@string/title_preferences"
         tools:layout="@layout/fragment_preferences" />
 </navigation>

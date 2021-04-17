@@ -10,7 +10,7 @@ android {
     buildToolsVersion "30.0.0"
 
     defaultConfig {
-        applicationId "com.example.peopledensitymeasurementprototype"
+        applicationId "edu.hm.pedemap"
         minSdkVersion 25
         targetSdkVersion 30
         versionCode 1

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">People Density Measurement Prototype</string>
+    <string name="app_name">PeDeMaP</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package com.example.peopledensitymeasurementprototype.model.proto;
+package edu.hm.peopledensitymeasurementprototype.model.proto;
 
 option go_package = "github.com/matthinc/BachelorThesisProject/pb";
 
