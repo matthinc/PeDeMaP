@@ -81,15 +81,15 @@ class DensityMapView(context: Context?, attrs: AttributeSet?) : MapView(context,
     }
 
     fun redrawDensity() {
-        controller.setZoom(DEFAULT_ZOOM)
+        controller.setZoom(zoomLevelDouble)
     }
 
-    fun removeWarnMessages() {
+    private fun removeWarnMessages() {
         warnMessages.forEach { overlays.remove(it) }
         warnMessages.clear()
     }
 
-    fun addWarnMessage(message: WarnMessage) {
+    private fun addWarnMessage(message: WarnMessage) {
         val marker = Marker(this)
         marker.position = GeoPoint(message.latitude, message.longitude)
         marker.title = message.message

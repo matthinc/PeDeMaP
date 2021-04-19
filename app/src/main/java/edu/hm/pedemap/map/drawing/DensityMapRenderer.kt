@@ -46,7 +46,6 @@ fun renderDensityMap(
                 }
 
                 canvas.drawPath(path, getPaintForDensity(density))
-
                 densityCallback(gridPosition.northing, gridPosition.easting, density)
             }
         }
