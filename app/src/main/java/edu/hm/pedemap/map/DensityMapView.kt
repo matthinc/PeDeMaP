@@ -24,8 +24,10 @@ class DensityMapView(context: Context?, attrs: AttributeSet?) : MapView(context,
 
     private val currentPositionMarker by lazy {
         val marker = CurrentPositionMarker(
-            GeoPoint(DEFAULT_CENTER.latitude(),
-                DEFAULT_CENTER.longitude()),
+            GeoPoint(
+                DEFAULT_CENTER.latitude(),
+                DEFAULT_CENTER.longitude()
+            ),
             0f,
             BuildConfig.FLAVOR == "ui_dev"
         )

@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import edu.hm.pedemap.BApplication
 import edu.hm.pedemap.BuildConfig
 import edu.hm.pedemap.R
-import edu.hm.pedemap.density.BaseDensityGrid
 import edu.hm.pedemap.density.UTMLocation
 import edu.hm.pedemap.density.toSingleProto
 import edu.hm.pedemap.map.DensityMapView
@@ -56,13 +55,17 @@ class MapFragment : Fragment() {
         }
 
         // Perform aging process every second to update view
-        Timer().scheduleAtFixedRate(object: TimerTask() {
-            override fun run() {
-                this@MapFragment.activity?.runOnUiThread {
-                    application.grid.purge()
+        Timer().scheduleAtFixedRate(
+            object : TimerTask() {
+                override fun run() {
+                    this@MapFragment.activity?.runOnUiThread {
+                        application.grid.purge()
+                    }
                 }
-            }
-        }, 1000, 1000)
+            },
+            1000,
+            1000
+        )
 
         viewModel.lastLocation.observe(
             viewLifecycleOwner,

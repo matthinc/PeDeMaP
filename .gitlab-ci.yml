@@ -1,0 +1,36 @@
+image: thyrlian/android-sdk
+
+stages:
+  - lint
+  - build
+  - apk
+
+android-lint:
+  stage: lint
+  script:
+    - ./gradlew ktlintCheck
+  tags:
+    - docker
+
+android-build:
+  stage: build
+  script:
+    - ./gradlew build
+  tags:
+    - docker
+
+android-build-apk:
+  stage: apk
+  script:
+    - ./gradlew bundleDemo_ui
+    - ./gradlew bundleDev_ui
+  tags:
+    - docker
+  artifacts:
+    paths:
+      - app/build/outputs/
+  only:
+    - tags
+
+
+
