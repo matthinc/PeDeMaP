@@ -68,4 +68,8 @@ class BaseDensityGrid : DensityGrid {
             observer(this)
         }
     }
+
+    override fun hashCode(): Int {
+        return locationList.map { it.hashCode() }.sum() % Int.MAX_VALUE
+    }
 }

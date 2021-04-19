@@ -73,7 +73,7 @@ class DensityMapView(context: Context?, attrs: AttributeSet?) : MapView(context,
     }
 
     fun setCurrentGridLocation(location: UTMLocation) {
-        gridOverlay.cellPosition = location
+        gridOverlay.gridCenterPosition = location
     }
 
     fun setDensityGrid(grid: DensityGrid) {

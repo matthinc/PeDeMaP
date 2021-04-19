@@ -214,6 +214,10 @@ class UTMLocation internal constructor () {
             }
         }
     }
+
+    override fun hashCode(): Int {
+        return deviceId ?: 42
+    }
 }
 
 fun UTMLocation.toLocationEntity(): LocationEntity {

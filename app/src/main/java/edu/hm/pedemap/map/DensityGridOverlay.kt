@@ -1,95 +1,102 @@
 package edu.hm.pedemap.map
 
-import android.graphics.Canvas
-import android.graphics.Path
+import android.graphics.*
 import edu.hm.pedemap.BApplication
 import edu.hm.pedemap.density.*
 import edu.hm.pedemap.getDatabase
+import edu.hm.pedemap.map.drawing.renderDensityMap
 import edu.hm.pedemap.model.entity.DensityMapEntity
 import edu.hm.pedemap.util.epochSecondTimestamp
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.Projection
 import org.osmdroid.views.overlay.Overlay
 
 class DensityGridOverlay(val application: BApplication) : Overlay() {
-
-    /**
-     * in meters
-     */
     var gridSize = 50
 
-    /**
-     * Grid position (top-left corner)
-     */
-    var cellPosition: UTMLocation = DensityMapView.DEFAULT_CENTER
+    var gridCenterPosition: UTMLocation = DensityMapView.DEFAULT_CENTER
 
     var densityGrid: DensityGrid? = null
 
-    // Make sure gridSize is dividable by cellSize
-    private val alignedGridSize get() = gridSize - (gridSize % application.cellSize)
+    var cacheBitmap: Bitmap? = null
+
+    var lastDensityGridHash: Int = densityGrid.hashCode()
+
+    var lastCenterPosition = gridCenterPosition
 
     override fun draw(canvas: Canvas?, projection: Projection?) {
-        if (canvas != null && projection != null) drawToCanvas(canvas, projection)
-    }
+        if (projection == null || canvas == null) return
 
-    /**
-     * Get path for a single Single cell
-     */
-    private fun getCellPath(position: UTMLocation, projection: Projection, cellSize: Int): Path {
-        fun UTMLocation.yP() = projection.getLongPixelYFromLatitude(this.latitude()).toFloat()
-        fun UTMLocation.xP() = projection.getLongPixelXFromLongitude(this.longitude()).toFloat()
+        /*
+        Drawing the density map is relatively slow due to the use of CPU rendering in osmdroid.
+        To improve the general performance of the app, the density map is rendered to a bitmap
+        which is then drawn to the map. The density map will only be rendered if the density grid or the
+        center position changes.
+         */
+        if (lastDensityGridHash != densityGrid.hashCode() || lastCenterPosition != gridCenterPosition) {
+            lastDensityGridHash = densityGrid.hashCode()
+            lastCenterPosition = gridCenterPosition
 
-        return Path().apply {
-            reset()
-            moveTo(position.xP(), position.yP())
-            lineTo(position.withOffset(0, cellSize).xP(), position.withOffset(0, cellSize).yP())
-            lineTo(position.withOffset(cellSize, cellSize).xP(), position.withOffset(cellSize, cellSize).yP())
-            lineTo(position.withOffset(cellSize, 0).xP(), position.withOffset(cellSize, 0).yP())
-            lineTo(position.xP(), position.yP())
-        }
-    }
+            val bitmapSize = projection.metersToPixels(gridSize.toFloat()).toInt() + 1
+            cacheBitmap = Bitmap.createBitmap(bitmapSize, bitmapSize, Bitmap.Config.ARGB_8888)
 
-    private fun drawToCanvas(canvas: Canvas, projection: Projection) {
-        val cellSize = application.cellSize
+            // The bitmap cache needs its own projection
+            val newProjection = Projection(
+                projection.zoomLevel,
+                bitmapSize,
+                bitmapSize,
+                GeoPoint(gridCenterPosition.latitude(), gridCenterPosition.longitude()),
+                projection.orientation,
+                false,
+                false,
+                0,
+                0
+            )
 
-        val startTime = System.currentTimeMillis()
-        var numberOfCells = 0
-
-        val gridCenteringRange = (-alignedGridSize until alignedGridSize step cellSize)
-
-        for (x in gridCenteringRange) {
-            for (y in gridCenteringRange) {
-                // Current drawing position
-                val gridPosition = cellPosition.withOffset(y, x)
-
-                if (densityGrid != null) {
-                    val density = densityGrid!!.getDensityAt(gridPosition)
-
-                    // Only draw cells with density > 0
-                    if (density.people > 0) {
-                        numberOfCells++
-                        canvas.drawPath(getCellPath(gridPosition, projection, cellSize), getPaintForDensity(density))
-
-                        // Also save density to database
-                        GlobalScope.launch {
-                            getDatabase(application).densityMapDao().insertDensity(
-                                DensityMapEntity(
-                                    0,
-                                    gridPosition.northing,
-                                    gridPosition.easting,
-                                    epochSecondTimestamp(),
-                                    density.people
-                                )
-                            )
-                        }
-                    }
+            // Render the density map to the bitmap
+            renderDensityMap(
+                cacheBitmap!!,
+                densityGrid!!,
+                newProjection,
+                gridCenterPosition,
+                application.cellSize,
+                gridSize
+            ) { n, e, d ->
+                GlobalScope.launch {
+                    getDatabase(application).densityMapDao().insertDensity(
+                        DensityMapEntity(0, n, e, epochSecondTimestamp(), d.people)
+                    )
                 }
             }
         }
 
-        // Log number of cells and duration
-        val duration = System.currentTimeMillis() - startTime
-        // log(application, LOG_LEVEL_DEBUG, "DensityGridOverlay", "$numberOfCells $duration")
+        /*
+        Draw the bitmap to the map. Only the center position of the bitmap is known at this point.
+        The upper left corner is defined as (center - bitmapWidth / 2, center - bitmapHeight / 2)
+         */
+        val bitmapX = (
+            projection.getLongPixelXFromLongitude(gridCenterPosition.longitude()) -
+                projection.metersToPixels(gridSize.toFloat() / 2)
+            ).toInt()
+
+        val bitmapY = (
+            projection.getLongPixelYFromLatitude(gridCenterPosition.latitude()) -
+                projection.metersToPixels(gridSize.toFloat() / 2)
+            ).toInt()
+
+        if (cacheBitmap != null) {
+            /*
+            The bitmap does not need to be re-rendered when the map's zoom level changes.
+            Therefore the size of the bitmap has to be calculated.
+             */
+            val projectionSize = projection.metersToPixels(gridSize.toFloat()).toInt()
+
+            val srcRect = Rect(0, 0, cacheBitmap!!.width, cacheBitmap!!.height)
+            val destRect = Rect(bitmapX, bitmapY, bitmapX + projectionSize, bitmapY + projectionSize)
+
+            canvas.drawBitmap(cacheBitmap!!, srcRect, destRect, null)
+        }
     }
 }
