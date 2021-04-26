@@ -5,8 +5,8 @@ import android.location.Location
 import android.util.AttributeSet
 import edu.hm.pedemap.BuildConfig
 import edu.hm.pedemap.R
-import edu.hm.pedemap.density.DensityGrid
 import edu.hm.pedemap.density.UTMLocation
+import edu.hm.pedemap.density.grid.DensityGrid
 import edu.hm.pedemap.messages.WarnMessage
 import edu.hm.pedemap.util.bApplication
 import org.osmdroid.config.Configuration

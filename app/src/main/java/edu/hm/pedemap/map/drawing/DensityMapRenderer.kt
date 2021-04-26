@@ -4,8 +4,8 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Path
 import edu.hm.pedemap.density.Density
-import edu.hm.pedemap.density.DensityGrid
 import edu.hm.pedemap.density.UTMLocation
+import edu.hm.pedemap.density.grid.DensityGrid
 import edu.hm.pedemap.map.getPaintForDensity
 import org.osmdroid.views.Projection
 

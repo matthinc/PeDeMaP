@@ -3,6 +3,7 @@ package edu.hm.pedemap.map
 import android.graphics.*
 import edu.hm.pedemap.BApplication
 import edu.hm.pedemap.density.*
+import edu.hm.pedemap.density.grid.DensityGrid
 import edu.hm.pedemap.getDatabase
 import edu.hm.pedemap.map.drawing.renderDensityMap
 import edu.hm.pedemap.model.entity.DensityMapEntity

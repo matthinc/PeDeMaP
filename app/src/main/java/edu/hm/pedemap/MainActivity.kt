@@ -15,7 +15,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import edu.hm.pedemap.density.UniqueIDProvider
 import edu.hm.pedemap.fragment.MapFragment
 import edu.hm.pedemap.model.entity.LOG_LEVEL_INFO
 import edu.hm.pedemap.receiver.BatteryChangedReceiver
@@ -23,6 +22,7 @@ import edu.hm.pedemap.service.ActivityRecognitionService
 import edu.hm.pedemap.service.LocationBroadcastReceiverService
 import edu.hm.pedemap.service.LocationService
 import edu.hm.pedemap.util.*
+import edu.hm.pedemap.util.UniqueIDProvider
 
 class MainActivity : AppCompatActivity() {
 
@@ -72,12 +72,11 @@ class MainActivity : AppCompatActivity() {
         startService(Intent(this, LocationService::class.java))
         startService(Intent(this, ActivityRecognitionService::class.java))
         startService(Intent(this, LocationBroadcastReceiverService::class.java))
-        // startService(Intent(this, WifiP2PService::class.java))
 
         registerReceiver(BatteryChangedReceiver(), IntentFilter(Intent.ACTION_BATTERY_CHANGED))
     }
 
-    fun setupReleaseLayout() {
+    private fun setupReleaseLayout() {
         setContentView(R.layout.activity_main_release)
 
         supportFragmentManager
@@ -86,7 +85,7 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
-    fun setupDebugLayout() {
+    private fun setupDebugLayout() {
         setContentView(R.layout.activity_main)
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 

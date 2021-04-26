@@ -1,7 +1,7 @@
 package edu.hm.pedemap
 
 import android.app.Application
-import edu.hm.pedemap.density.BaseDensityGrid
+import edu.hm.pedemap.density.grid.BaseDensityGrid
 import edu.hm.pedemap.density.strategy.RadiusNormalDistributedDensityCalculationStrategy
 import edu.hm.pedemap.density.strategy.SimpleDensityCalculationStrategy
 import edu.hm.pedemap.messages.MessageManager

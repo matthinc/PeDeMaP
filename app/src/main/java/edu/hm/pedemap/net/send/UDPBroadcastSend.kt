@@ -26,7 +26,7 @@ class UDPBroadcastSend(val context: Context) : SendStrategy {
      */
     private fun getWifiInterface(): NetworkInterface? {
         return NetworkInterface.getNetworkInterfaces().toList().find {
-            it.name == "wlan0" || it.name == "eth0" || it.name == "p2p0"
+            it.name == "wlan0" || it.name == "eth0"
         }
     }
 
@@ -37,6 +37,9 @@ class UDPBroadcastSend(val context: Context) : SendStrategy {
         return (getWifiInterface() ?: return null).interfaceAddresses.find { it.broadcast != null }?.broadcast
     }
 
+    /**
+     * Sends bytes via a IP/UDP broadcast with the destination port [PORT]
+     */
     private fun sendByteData(bytes: ByteArray) {
         val broadcastAddress = getBroadcastAddress()
 
@@ -54,11 +57,6 @@ class UDPBroadcastSend(val context: Context) : SendStrategy {
                 socket.send(packet)
             }
         }
-    }
-
-    companion object {
-        const val PORT = 1510
-        const val MAX_MESSAGE_SIZE = 300
     }
 
     override fun sendMessage(data: Definitions.LocationMessageWrapper) {
@@ -84,5 +82,10 @@ class UDPBroadcastSend(val context: Context) : SendStrategy {
             message = data
         }.build()
         sendMessage(wrapper)
+    }
+
+    companion object {
+        const val PORT = 1510
+        const val MAX_MESSAGE_SIZE = 300
     }
 }

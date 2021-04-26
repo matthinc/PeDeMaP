@@ -18,15 +18,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service
-            android:name="edu.hm.pedemap.service.WifiP2PService"
-            android:enabled="true"
-            android:exported="false" />
 
         <receiver
             android:name="edu.hm.pedemap.receiver.NetworkLocationReceiver"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="false" />
 
         <service
             android:name="edu.hm.pedemap.service.LocationBroadcastReceiverService"

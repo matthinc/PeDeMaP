@@ -1,5 +1,8 @@
-package edu.hm.pedemap.density
+package edu.hm.pedemap.density.grid
 
+import edu.hm.pedemap.density.Density
+import edu.hm.pedemap.density.ForeignDensityMap
+import edu.hm.pedemap.density.UTMLocation
 import edu.hm.pedemap.density.strategy.DensityCalculationStrategy
 import edu.hm.pedemap.density.strategy.SimpleDensityCalculationStrategy
 import edu.hm.pedemap.util.epochSecondTimestamp
