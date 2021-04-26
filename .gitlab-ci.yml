@@ -22,8 +22,8 @@ android-build:
 android-build-apk:
   stage: apk
   script:
-    - ./gradlew bundleDemo_ui
-    - ./gradlew bundleDev_ui
+    - ./gradlew assembleDev_uiDebug
+    - ./gradlew assembleDemo_uiDebug
   tags:
     - docker
   artifacts:

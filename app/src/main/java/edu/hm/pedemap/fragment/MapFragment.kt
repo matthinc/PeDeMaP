@@ -73,7 +73,6 @@ class MapFragment : Fragment() {
                 if (location != null) {
                     val locationGeoPoint = location.toGeoPoint()
                     view.osm_map_view.setCurrentPosition(locationGeoPoint, location.accuracy)
-                    view.osm_map_view.controller.setCenter(locationGeoPoint)
                     view.osm_map_view.setCurrentGridLocation(
                         UTMLocation.newBuilder(
                             location.zoneId,

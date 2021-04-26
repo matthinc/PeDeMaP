@@ -68,6 +68,8 @@ class DensityMapView(context: Context?, attrs: AttributeSet?) : MapView(context,
      * @param point position as [GeoPoint]
      */
     fun setCurrentPosition(point: GeoPoint, acc: Float) {
+        controller.animateTo(point)
+
         currentPositionMarker.position = point
         currentPositionMarker.radius = acc
     }
