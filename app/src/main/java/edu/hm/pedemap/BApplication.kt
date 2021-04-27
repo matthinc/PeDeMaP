@@ -26,7 +26,7 @@ class BApplication() : Application() {
 
     fun reloadPreferences() {
         grid.densityCalculationStrategy = when (getSettingsPreferences().readPropertyInt(Preferences.densityStrategy)) {
-            1 -> RadiusNormalDistributedDensityCalculationStrategy(this)
+            1 -> RadiusNormalDistributedDensityCalculationStrategy(cellSize)
             else -> SimpleDensityCalculationStrategy()
         }
         grid.aging = getSettingsPreferences().readPropertyBoolean(Preferences.aging)

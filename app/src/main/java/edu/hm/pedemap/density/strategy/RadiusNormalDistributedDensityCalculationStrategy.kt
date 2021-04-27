@@ -1,16 +1,14 @@
 package edu.hm.pedemap.density.strategy
 
-import android.app.Application
 import edu.hm.pedemap.density.Density
 import edu.hm.pedemap.density.UTMLocation
 import edu.hm.pedemap.density.sum
-import edu.hm.pedemap.util.bApplication
 import kotlin.collections.HashMap
 import kotlin.math.exp
 import kotlin.math.floor
 import kotlin.math.pow
 
-class RadiusNormalDistributedDensityCalculationStrategy(val application: Application) : DensityCalculationStrategy {
+class RadiusNormalDistributedDensityCalculationStrategy(val cellSize: Int) : DensityCalculationStrategy {
 
     private var density: List<Map<LocationKey, Density>> = emptyList()
 
@@ -29,7 +27,6 @@ class RadiusNormalDistributedDensityCalculationStrategy(val application: Applica
      */
     private fun densityDistributionByDevice(location: UTMLocation): Map<LocationKey, Density> {
         val densDist = HashMap<LocationKey, Density>()
-        val cellSize = application.bApplication().cellSize
 
         // Calculate the density in a circle with r = accuracy * MAX_RADIUS
         val range = floor(location.accuracy!! * MAX_RADIUS).toInt() / cellSize
