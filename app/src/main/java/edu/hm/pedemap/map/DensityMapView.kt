@@ -13,6 +13,7 @@ import org.osmdroid.config.Configuration
 import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
@@ -29,7 +30,7 @@ class DensityMapView(context: Context?, attrs: AttributeSet?) : MapView(context,
                 DEFAULT_CENTER.longitude()
             ),
             0f,
-            BuildConfig.FLAVOR == "ui_dev"
+            BuildConfig.FLAVOR == "dev_ui"
         )
 
         overlays.add(marker)
@@ -44,12 +45,16 @@ class DensityMapView(context: Context?, attrs: AttributeSet?) : MapView(context,
         Configuration.getInstance().userAgentValue = BuildConfig.APPLICATION_ID
 
         // Set tile source
-        setTileSource(TileSourceFactory.MAPNIK)
+        setTileSource(TileSourceFactory.WIKIMEDIA)
+        setUseDataConnection(true)
 
         // Enable controls
         setMultiTouchControls(true)
         zoomController.setZoomInEnabled(true)
         zoomController.setZoomOutEnabled(true)
+
+        if (BuildConfig.FLAVOR == "demo_ui")
+            zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
 
         // Default position and zoom
         controller.setCenter(GeoPoint(DEFAULT_CENTER.latitude(), DEFAULT_CENTER.longitude()))
