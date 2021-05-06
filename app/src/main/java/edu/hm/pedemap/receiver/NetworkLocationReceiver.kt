@@ -16,6 +16,7 @@ import edu.hm.pedemap.model.entity.LOG_LEVEL_DEBUG
 import edu.hm.pedemap.model.entity.LOG_LEVEL_ERROR
 import edu.hm.pedemap.model.entity.LOG_LEVEL_INFO
 import edu.hm.pedemap.model.proto.Definitions
+import edu.hm.pedemap.util.bApplication
 import edu.hm.pedemap.util.log
 
 class NetworkLocationReceiver : BroadcastReceiver() {
@@ -27,6 +28,7 @@ class NetworkLocationReceiver : BroadcastReceiver() {
             if (data != null) {
                 try {
                     handleProto(context, data)
+                    context.bApplication().statisticsManager.messageRateCounter.countEvent()
                 } catch (e: InvalidProtocolBufferException) {
                     log(context, LOG_LEVEL_ERROR, "NetworkLocationReceiver", "Received invalid proto")
                 }
@@ -123,6 +125,7 @@ class NetworkLocationReceiver : BroadcastReceiver() {
 
         // Add to density grid
         application.grid.add(utmLocation)
+        application.statisticsManager.numberOfUsers.set(application.grid.getNumberOfDevices())
 
         log(
             context,

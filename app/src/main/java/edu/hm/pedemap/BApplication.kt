@@ -6,6 +6,7 @@ import edu.hm.pedemap.density.strategy.RadiusNormalDistributedDensityCalculation
 import edu.hm.pedemap.density.strategy.SimpleDensityCalculationStrategy
 import edu.hm.pedemap.messages.MessageManager
 import edu.hm.pedemap.net.send.UDPBroadcastSend
+import edu.hm.pedemap.statistics.StatisticsManager
 import edu.hm.pedemap.util.Preferences
 import edu.hm.pedemap.util.getSettingsPreferences
 import edu.hm.pedemap.util.readPropertyBoolean
@@ -19,6 +20,8 @@ class BApplication() : Application() {
     var currentLocationTTL = 0
 
     val warnMessageManager = MessageManager()
+
+    val statisticsManager = StatisticsManager()
 
     val cellSize by lazy {
         getSettingsPreferences().readPropertyInt(Preferences.cellSize)
