@@ -66,6 +66,9 @@ class DensityMapView(context: Context?, attrs: AttributeSet?) : MapView(context,
 
         // Receive events
         overlays.add(MapEventsOverlay(this))
+
+        val logoOverlay = LogoOverlay(context)
+        overlays.add(logoOverlay)
     }
 
     /**
