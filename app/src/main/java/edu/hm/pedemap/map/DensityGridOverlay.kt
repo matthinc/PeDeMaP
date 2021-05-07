@@ -40,7 +40,7 @@ class DensityGridOverlay(val application: BApplication) : Overlay() {
             lastDensityGridHash = densityGrid.hashCode()
             lastCenterPosition = gridCenterPosition
 
-            val bitmapSize = projection.metersToPixels(gridSize.toFloat()).toInt() + 1
+            val bitmapSize = projection.metersToPixels(gridSize.toFloat()).toInt() + 300
             cacheBitmap = Bitmap.createBitmap(bitmapSize, bitmapSize, Bitmap.Config.ARGB_8888)
 
             // The bitmap cache needs its own projection
@@ -97,7 +97,15 @@ class DensityGridOverlay(val application: BApplication) : Overlay() {
             val srcRect = Rect(0, 0, cacheBitmap!!.width, cacheBitmap!!.height)
             val destRect = Rect(bitmapX, bitmapY, bitmapX + projectionSize, bitmapY + projectionSize)
 
-            canvas.drawBitmap(cacheBitmap!!, srcRect, destRect, null)
+            // Draw bitmap without filtering to keep the bitmap sharp
+            canvas.drawBitmap(
+                cacheBitmap!!,
+                srcRect,
+                destRect,
+                Paint().also {
+                    it.isFilterBitmap = false
+                }
+            )
         }
     }
 }
