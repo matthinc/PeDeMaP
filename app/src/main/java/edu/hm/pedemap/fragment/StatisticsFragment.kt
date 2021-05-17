@@ -1,5 +1,6 @@
 package edu.hm.pedemap.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import androidx.databinding.Observable
 import androidx.databinding.ObservableFloat
 import androidx.databinding.ObservableInt
 import androidx.fragment.app.Fragment
+import edu.hm.pedemap.PrivacyActivity
 import edu.hm.pedemap.R
 import edu.hm.pedemap.util.bApplication
 import kotlinx.android.synthetic.main.fragment_statistics.view.*
@@ -46,6 +48,10 @@ class StatisticsFragment : Fragment() {
                 }
             }
         )
+
+        view.info_icon.setOnClickListener {
+            startActivity(Intent(requireContext(), PrivacyActivity::class.java))
+        }
 
         return view
     }

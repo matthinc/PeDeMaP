@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.hm.pedemap">
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -11,7 +12,7 @@
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
 
     <application
-        android:name="edu.hm.pedemap.BApplication"
+        android:name=".BApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -19,42 +20,47 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <activity
+            android:name=".PrivacyActivity"
+            android:label="@string/title_activity_privacy"
+            android:theme="@style/PrivacyTheme" />
+
         <receiver
-            android:name="edu.hm.pedemap.receiver.NetworkLocationReceiver"
+            android:name=".receiver.NetworkLocationReceiver"
             android:enabled="true"
             android:exported="false" />
 
         <service
-            android:name="edu.hm.pedemap.service.LocationBroadcastReceiverService"
+            android:name=".service.LocationBroadcastReceiverService"
             android:enabled="true"
             android:exported="false" />
 
         <receiver
-            android:name="edu.hm.pedemap.receiver.ActivityReceiver"
+            android:name=".receiver.ActivityReceiver"
             android:enabled="true"
             android:exported="false" />
 
         <service
-            android:name="edu.hm.pedemap.service.ActivityRecognitionService"
+            android:name=".service.ActivityRecognitionService"
             android:enabled="true"
             android:exported="false" />
 
         <receiver
-            android:name="edu.hm.pedemap.receiver.BatteryChangedReceiver"
+            android:name=".receiver.BatteryChangedReceiver"
             android:enabled="true"
             android:exported="false" />
         <receiver
-            android:name="edu.hm.pedemap.receiver.LocationUpdateReceiver"
+            android:name=".receiver.LocationUpdateReceiver"
             android:enabled="true"
             android:exported="false" />
 
         <service
-            android:name="edu.hm.pedemap.service.LocationService"
+            android:name=".service.LocationService"
             android:enabled="true"
             android:exported="false" />
 
         <activity
-            android:name="edu.hm.pedemap.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
