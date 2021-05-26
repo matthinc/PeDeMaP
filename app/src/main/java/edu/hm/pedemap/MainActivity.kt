@@ -19,6 +19,7 @@ import edu.hm.pedemap.fragment.MapFragment
 import edu.hm.pedemap.model.entity.LOG_LEVEL_INFO
 import edu.hm.pedemap.receiver.BatteryChangedReceiver
 import edu.hm.pedemap.service.ActivityRecognitionService
+import edu.hm.pedemap.service.DensityMapAgingService
 import edu.hm.pedemap.service.LocationBroadcastReceiverService
 import edu.hm.pedemap.service.LocationService
 import edu.hm.pedemap.util.*
@@ -72,6 +73,7 @@ class MainActivity : AppCompatActivity() {
         startService(Intent(this, LocationService::class.java))
         startService(Intent(this, ActivityRecognitionService::class.java))
         startService(Intent(this, LocationBroadcastReceiverService::class.java))
+        startService(Intent(this, DensityMapAgingService::class.java))
 
         registerReceiver(BatteryChangedReceiver(), IntentFilter(Intent.ACTION_BATTERY_CHANGED))
     }

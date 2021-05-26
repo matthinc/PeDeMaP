@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.Projection
 import org.osmdroid.views.overlay.Overlay
+import java.util.concurrent.locks.ReentrantLock
 
 class DensityGridOverlay(val application: BApplication) : Overlay() {
     var gridSize = 50
@@ -21,11 +22,13 @@ class DensityGridOverlay(val application: BApplication) : Overlay() {
 
     var densityGrid: DensityGrid? = null
 
-    var cacheBitmap: Bitmap? = null
+    var cacheBitmap = TransactionalMultiBitmap(500)
 
     var lastDensityGridHash: Int = densityGrid.hashCode()
 
     var lastCenterPosition = gridCenterPosition
+
+    private val densityCalculatingMutex = ReentrantLock()
 
     override fun draw(canvas: Canvas?, projection: Projection?) {
         if (projection == null || canvas == null) return
@@ -40,36 +43,44 @@ class DensityGridOverlay(val application: BApplication) : Overlay() {
             lastDensityGridHash = densityGrid.hashCode()
             lastCenterPosition = gridCenterPosition
 
-            val bitmapSize = projection.metersToPixels(gridSize.toFloat()).toInt() + 300
-            cacheBitmap = Bitmap.createBitmap(bitmapSize, bitmapSize, Bitmap.Config.ARGB_8888)
+            GlobalScope.launch {
+                val bitmapSize = projection.metersToPixels(gridSize.toFloat()).toInt() + 300
 
-            // The bitmap cache needs its own projection
-            val newProjection = Projection(
-                projection.zoomLevel,
-                bitmapSize,
-                bitmapSize,
-                GeoPoint(gridCenterPosition.latitude(), gridCenterPosition.longitude()),
-                projection.orientation,
-                false,
-                false,
-                0,
-                0
-            )
+                densityCalculatingMutex.lock()
+                cacheBitmap.resize(bitmapSize)
+                cacheBitmap.startTransaction()
 
-            // Render the density map to the bitmap
-            renderDensityMap(
-                cacheBitmap!!,
-                densityGrid!!,
-                newProjection,
-                gridCenterPosition,
-                application.cellSize,
-                gridSize
-            ) { n, e, d ->
-                GlobalScope.launch {
-                    getDatabase(application).densityMapDao().insertDensity(
-                        DensityMapEntity(0, n, e, epochSecondTimestamp(), d.people)
-                    )
+                // The bitmap cache needs its own projection
+                val newProjection = Projection(
+                    projection.zoomLevel,
+                    bitmapSize,
+                    bitmapSize,
+                    GeoPoint(gridCenterPosition.latitude(), gridCenterPosition.longitude()),
+                    projection.orientation,
+                    false,
+                    false,
+                    0,
+                    0
+                )
+
+                // Render the density map to the bitmap
+                renderDensityMap(
+                    cacheBitmap,
+                    densityGrid!!,
+                    newProjection,
+                    gridCenterPosition,
+                    application.cellSize,
+                    gridSize
+                ) { n, e, d ->
+                    GlobalScope.launch {
+                        getDatabase(application).densityMapDao().insertDensity(
+                            DensityMapEntity(0, n, e, epochSecondTimestamp(), d.people)
+                        )
+                    }
                 }
+
+                cacheBitmap.commitTransaction()
+                densityCalculatingMutex.unlock()
             }
         }
 
@@ -87,25 +98,14 @@ class DensityGridOverlay(val application: BApplication) : Overlay() {
                 projection.metersToPixels(gridSize.toFloat() / 2)
             ).toInt()
 
-        if (cacheBitmap != null) {
-            /*
-            The bitmap does not need to be re-rendered when the map's zoom level changes.
-            Therefore the size of the bitmap has to be calculated.
-             */
-            val projectionSize = projection.metersToPixels(gridSize.toFloat()).toInt()
+        /*
+        The bitmap does not need to be re-rendered when the map's zoom level changes.
+        Therefore the size of the bitmap has to be calculated.
+         */
+        val projectionSize = projection.metersToPixels(gridSize.toFloat()).toInt()
 
-            val srcRect = Rect(0, 0, cacheBitmap!!.width, cacheBitmap!!.height)
-            val destRect = Rect(bitmapX, bitmapY, bitmapX + projectionSize, bitmapY + projectionSize)
+        val destRect = Rect(bitmapX, bitmapY, bitmapX + projectionSize, bitmapY + projectionSize)
 
-            // Draw bitmap without filtering to keep the bitmap sharp
-            canvas.drawBitmap(
-                cacheBitmap!!,
-                srcRect,
-                destRect,
-                Paint().also {
-                    it.isFilterBitmap = false
-                }
-            )
-        }
+        cacheBitmap.drawToCanvas(canvas, destRect)
     }
 }

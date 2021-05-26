@@ -37,7 +37,6 @@ class BaseDensityGrid : DensityGrid {
     }
 
     override fun getDensityAt(utmLocation: UTMLocation): Density {
-        purge()
         return densityCalculationStrategy.calculateDensityAt(locationList, utmLocation)
     }
 

@@ -61,7 +61,7 @@ class DensityMapView(context: Context?, attrs: AttributeSet?) : MapView(context,
         controller.setZoom(DEFAULT_ZOOM)
 
         gridOverlay = DensityGridOverlay(context!!.bApplication())
-        gridOverlay.gridSize = 101
+        gridOverlay.gridSize = 1001
         overlays.add(gridOverlay)
 
         // Receive events
